@@ -105,48 +105,50 @@
     
     <div class="upload-container">
         <form id="uploadForm" enctype="multipart/form-data">
-            <div class="form-grid">
-                <div class="form-group" style="margin-right: 800px;">
+            <div class="form-grid" style="display: block">
+                <div class="form-group" style="width: 30%; text-align: left;">
                     <label for="fileInput">Upload billede af dit ønskede motiv:</label>
                     <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.gif">
                 </div>
                 
-                <div class="form-group">
-                    <label for="size">Ønsket højde (cm):</label>
-                    <input type="number" id="size" name="size" step="0.1" value="20">
-                    <div class="help-text">Fortæl hvilken højde motivet skal have på dit strikketøj</div>
+                <div style="display: flex; justify-content: space-between;"> 
+                    <div class="form-group" style="width: 30%; text-align: left;">
+                        <label for="size">Ønsket højde (cm):</label>
+                        <input type="number" id="size" name="size" step="0.1" value="20">
+                        <div class="help-text">Fortæl hvilken højde motivet skal have på dit strikketøj</div>
+                    </div>
+                    
+                    <div class="form-group" style="width: 30%; text-align: left;">
+                        <label for="masker">Strikkefasthed, masker:</label>
+                        <input type="number" id="masker" name="masker" step="0.1" value="19">
+                        <div class="help-text">Angiv antal masker på 10 cm</div>
+                    </div>
+                    
+                    <div class="form-group" style="width: 30%; text-align: left;">
+                        <label for="pinde">Strikkefasthed, pinde:</label>
+                        <input type="number" id="pinde" name="pinde" step="0.1" value="37">
+                        <div class="help-text">Angiv antal pinde på 10 cm</div>
+                    </div>
                 </div>
-                
-                <div class="form-group">
-                    <label for="masker">Strikkefasthed, masker:</label>
-                    <input type="number" id="masker" name="masker" step="0.1" value="19">
-                    <div class="help-text">Angiv antal masker på 10 cm</div>
-                </div>
-                
-                <div class="form-group" style="margin-right: 600px;">
-                    <label for="pinde">Strikkefasthed, pinde:</label>
-                    <input type="number" id="pinde" name="pinde" step="0.1" value="37">
-                    <div class="help-text">Angiv antal pinde på 10 cm</div>
-                </div>
-
-                <div class="form-group" style="margin-right: 800px;">
-                    <label for="valg">Strikkemetode:</label>
-                    <select id="valg" name="valg">
-                        <option value="værdi1">Der strikkes på rundpind</option>
-                        <option value="værdi2">Der strikkes frem og tilbage</option>
-                    </select>
-                    <div class="help-text">Vælg mellem de to muligheder</div>
-                </div>     
-                
-                <div class="form-group" style="margin-right: 800px;">
-                    <label for="valg2">Arbejdets begyndelse:</label>
-                    <select id="valg2" name="valg2">
-                        <option value="værdi2_1">Der strikkes oppefra og ned</option>
-                        <option value="værdi2_2">Der strikkes nedefra og op</option>
-                    </select>
-                    <div class="help-text">Vælg mellem de to muligheder</div>
-                </div>   
-
+                <div style="display: flex; justify-content: space-between;"> 
+                    <div class="form-group" style="width: 30%; text-align: left;">
+                        <label for="method">Strikkemetode:</label>
+                        <select id="method" name="method">
+                            <option value=1>Der strikkes på rundpind</option>
+                            <option value=0>Der strikkes frem og tilbage</option>
+                        </select>
+                        <div class="help-text">Vælg mellem de to muligheder</div>
+                    </div>     
+                    
+                    <div class="form-group" style="width: 65%; text-align: left;">
+                        <label for="start">Arbejdets begyndelse:</label>
+                        <select id="start" name="valg2">
+                            <option value=1>Der strikkes oppefra og ned</option>
+                            <option value=0>Der strikkes nedefra og op</option>
+                        </select>
+                        <div class="help-text">Vælg mellem de to muligheder</div>
+                    </div>  
+                </div> 
             </div>
             
             <button type="submit">Genererer mønster</button>

@@ -35,27 +35,51 @@ def process_to_bw_pixels(image, width, height):
     bw_image = grayscale.point(lambda x: 0 if x < 210 else 255, '1')
     return bw_image
 
-def generate_knitting_instructions(bw_image):
+def generate_knitting_instructions(bw_image,start):
     """Generate knitting instructions reading from bottom up, left to right"""
-    width, height = bw_image.size
-    pixels = np.array(bw_image)
-    instructions = []
-    
-    # Process rows from bottom to top
-    for row in reversed(range(height)):
-        current_color = pixels[row][0]  # Start with first pixel's color
-        count = 1
-        row_instructions = []
+    if start == 1:
+        width, height = bw_image.size
+        pixels = np.array(bw_image)
+        instructions = []
         
-        # Process each pixel in the row
-        for col in range(1, width):
-            if pixels[row][col] == current_color:
-                count += 1
-            else:
-                row_instructions.append(f"{count} {'white' if current_color else 'black'}")
-                current_color = pixels[row][col]
-                count = 1
-                
+        # Process rows from bottom to top
+        for row in reversed(range(height)):
+            current_color = pixels[row][0]  # Start with first pixel's color
+            count = 1
+            row_instructions = []
+            
+            # Process each pixel in the row
+            for col in range(1, width):
+                if pixels[row][col] == current_color:
+                    count += 1
+                else:
+                    row_instructions.append(f"{count} {'white' if current_color else 'black'}")
+                    current_color = pixels[row][col]
+                    count = 1
+        # Add the last group
+        row_instructions.append(f"{count} {'white' if current_color else 'black'}")
+        instructions.append(", ".join(row_instructions))
+    
+    else: 
+        width, height = bw_image.size
+        pixels = np.array(bw_image)
+        instructions = []
+        
+        # Process rows from bottom to top
+        for row in range(height):
+            current_color = pixels[row][0]  # Start with first pixel's color
+            count = 1
+            row_instructions = []
+            
+            # Process each pixel in the row
+            for col in range(1, width):
+                if pixels[row][col] == current_color:
+                    count += 1
+                else:
+                    row_instructions.append(f"{count} {'white' if current_color else 'black'}")
+                    current_color = pixels[row][col]
+                    count = 1
+
         # Add the last group
         row_instructions.append(f"{count} {'white' if current_color else 'black'}")
         instructions.append(", ".join(row_instructions))
@@ -81,6 +105,8 @@ def process():
         desired_size = float(request.form.get('size', 10))  # Default 10cm
         pinde = float(request.form.get('pinde', 37))        # Default 37 stitches/10cm
         masker = float(request.form.get('masker', 19))      # Default 19 rows/10cm
+        method = float(request.form.get('method', 1))      # Default er at der strikkes rundt på rundpind
+        start = float(request.form.get('start', 1))      # Default er at der startes fra toppen
     except ValueError:
         return jsonify({'error': 'Invalid numeric values'}), 400
     
@@ -96,7 +122,7 @@ def process():
             bw_image = process_to_bw_pixels(image, width, height)
             
             # Generate knitting instructions
-            instructions = generate_knitting_instructions(bw_image)
+            instructions = generate_knitting_instructions(bw_image,start)
             
             # Save processed image to base64 for display
             img_buffer = BytesIO()
