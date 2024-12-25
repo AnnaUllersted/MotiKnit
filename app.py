@@ -5,7 +5,15 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return 'Hello, Heroku!'
+    return """<!DOCTYPE html>
+    <html>
+    <body>
+
+    <h1>My First Heading</h1>
+    <p>My first paragraph.</p>
+
+    </body>
+    </html>"""
 
 @app.route('/test')
 def test():
