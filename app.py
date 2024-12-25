@@ -37,12 +37,11 @@ def process_to_bw_pixels(image, width, height):
 
 def generate_knitting_instructions(bw_image,start):
     """Generate knitting instructions reading from bottom up, left to right"""
-    if start == 1:
-        width, height = bw_image.size
-        pixels = np.array(bw_image)
-        instructions = []
-        
-        # Process rows from bottom to top
+    width, height = bw_image.size
+    pixels = np.array(bw_image)
+    instructions = []
+    if start == 0:        
+        # Process rows from top to bottom
         for row in reversed(range(height)):
             current_color = pixels[row][0]  # Start with first pixel's color
             count = 1
@@ -56,15 +55,10 @@ def generate_knitting_instructions(bw_image,start):
                     row_instructions.append(f"{count} {'white' if current_color else 'black'}")
                     current_color = pixels[row][col]
                     count = 1
-        # Add the last group
-        row_instructions.append(f"{count} {'white' if current_color else 'black'}")
-        instructions.append(", ".join(row_instructions))
-    
-    else: 
-        width, height = bw_image.size
-        pixels = np.array(bw_image)
-        instructions = []
-        
+            # Add the last group
+            row_instructions.append(f"{count} {'white' if current_color else 'black'}")
+            instructions.append(", ".join(row_instructions))
+    else:         
         # Process rows from bottom to top
         for row in range(height):
             current_color = pixels[row][0]  # Start with first pixel's color
@@ -80,10 +74,9 @@ def generate_knitting_instructions(bw_image,start):
                     current_color = pixels[row][col]
                     count = 1
 
-        # Add the last group
-        row_instructions.append(f"{count} {'white' if current_color else 'black'}")
-        instructions.append(", ".join(row_instructions))
-    
+            # Add the last group
+            row_instructions.append(f"{count} {'white' if current_color else 'black'}")
+            instructions.append(", ".join(row_instructions))
     return instructions
 
 @app.route('/')
