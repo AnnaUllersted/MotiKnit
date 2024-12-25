@@ -1,29 +1,39 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, send_file
 import os
 from werkzeug.utils import secure_filename
 from PIL import Image
+import base64
+from io import BytesIO
+
 
 app = Flask(__name__)
 
 # Configuration
-UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# Create uploads directory if it doesn't exist
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def process_image_and_text(image):
+    # Convert to greyscale
+    greyscale_image = image.convert('L')
+    
+    # Extract text
+    extracted_text ="testing testing"
+    
+    # Convert processed image to base64
+    img_buffer = BytesIO()
+    greyscale_image.save(img_buffer, format='PNG')
+    img_str = base64.b64encode(img_buffer.getvalue()).decode()
+    
+    return img_str, extracted_text
 
 @app.route('/')
 def home():
     return render_template('index.html')
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
+@app.route('/process', methods=['POST'])
+def process():
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
     
@@ -33,45 +43,20 @@ def upload_file():
         return jsonify({'error': 'No selected file'}), 400
     
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        
-        # Save the uploaded file
-        file.save(filepath)
-        
         try:
-            # Process the image
-            with Image.open(filepath) as image:
-                extracted_text = "testing testing"
+            # Open and process the image
+            image = Image.open(file)
             
-            # Close any remaining file handles explicitly
-            try:
-                image.close()
-            except:
-                pass
+            # Process image and get text
+            processed_image_b64, extracted_text = process_image_and_text(image)
             
-            # Add a small delay to ensure all handles are released
-            import time
-            time.sleep(0.1)
-            
-            # Try to remove the file
-            try:
-                os.remove(filepath)
-            except Exception as e:
-                print(f"Warning: Could not remove temporary file {filepath}: {str(e)}")
-                # Continue execution even if we couldn't remove the file
-                
             return jsonify({
-                'message': 'File successfully uploaded and processed',
+                'message': 'File processed successfully',
+                'processed_image': processed_image_b64,
                 'extracted_text': extracted_text
             })
             
         except Exception as e:
-            # If any error occurs during processing, attempt to clean up
-            try:
-                os.remove(filepath)
-            except:
-                pass
             return jsonify({'error': str(e)}), 500
             
     return jsonify({'error': 'File type not allowed'}), 400
