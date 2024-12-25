@@ -17,6 +17,24 @@
             text-align: center;
             margin: 20px 0;
         }
+        .form-group {
+            margin: 15px 0;
+            text-align: left;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
         .result-container {
             margin-top: 20px;
             padding: 20px;
@@ -53,6 +71,12 @@
             margin: 20px 0;
             color: #666;
         }
+        .parameters {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+        }
         @media (max-width: 768px) {
             .image-grid {
                 grid-template-columns: 1fr;
@@ -66,6 +90,17 @@
     <div class="upload-container">
         <form id="uploadForm" enctype="multipart/form-data">
             <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.gif">
+            
+            <div class="form-group">
+                <label for="pinde">Pinde:</label>
+                <input type="number" id="pinde" name="pinde" step="any" value="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="masker">Masker:</label>
+                <input type="number" id="masker" name="masker" step="any" value="0">
+            </div>
+            
             <button type="submit">Process Image</button>
         </form>
     </div>
@@ -88,6 +123,11 @@
     <div id="result" class="result-container">
         <h2>Extracted Text:</h2>
         <pre id="extractedText"></pre>
+        <div id="parameters" class="parameters">
+            <h3>Processing Parameters:</h3>
+            <p>Pinde: <span id="usedPinde"></span></p>
+            <p>Masker: <span id="usedMasker"></span></p>
+        </div>
     </div>
 
     <p id="error" class="error"></p>
@@ -100,6 +140,8 @@
         const extractedTextElement = document.getElementById('extractedText');
         const errorElement = document.getElementById('error');
         const loadingElement = document.getElementById('loading');
+        const usedPindeElement = document.getElementById('usedPinde');
+        const usedMaskerElement = document.getElementById('usedMasker');
 
         // Show original image preview when file is selected
         fileInput.addEventListener('change', function(e) {
@@ -124,6 +166,8 @@
 
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
+            formData.append('pinde', document.getElementById('pinde').value);
+            formData.append('masker', document.getElementById('masker').value);
             
             try {
                 errorElement.textContent = '';
@@ -144,6 +188,11 @@
                     
                     // Display extracted text
                     extractedTextElement.textContent = data.extracted_text;
+                    
+                    // Display used parameters
+                    usedPindeElement.textContent = data.parameters.pinde;
+                    usedMaskerElement.textContent = data.parameters.masker;
+                    
                     resultDiv.style.display = 'block';
                 } else {
                     throw new Error(data.error);

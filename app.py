@@ -14,12 +14,15 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def process_image_and_text(image):
+def process_image_and_text(image, pinde, masker):
     # Convert to greyscale
     greyscale_image = image.convert('L')
     
     # Extract text
-    extracted_text ="testing testing"
+    extracted_text = "testing testing"
+    
+    # Log the received parameters (you can modify the processing based on these values)
+    print(f"Processing with pinde: {pinde}, masker: {masker}")
     
     # Convert processed image to base64
     img_buffer = BytesIO()
@@ -42,18 +45,29 @@ def process():
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
     
+    # Get pinde and masker values from form data
+    try:
+        pinde = float(request.form.get('pinde', 0))
+        masker = float(request.form.get('masker', 0))
+    except ValueError:
+        return jsonify({'error': 'Invalid numeric values for pinde or masker'}), 400
+    
     if file and allowed_file(file.filename):
         try:
             # Open and process the image
             image = Image.open(file)
             
             # Process image and get text
-            processed_image_b64, extracted_text = process_image_and_text(image)
+            processed_image_b64, extracted_text = process_image_and_text(image, pinde, masker)
             
             return jsonify({
                 'message': 'File processed successfully',
                 'processed_image': processed_image_b64,
-                'extracted_text': extracted_text
+                'extracted_text': extracted_text,
+                'parameters': {
+                    'pinde': pinde,
+                    'masker': masker
+                }
             })
             
         except Exception as e:
