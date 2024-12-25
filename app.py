@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 from PIL import Image
 import base64
 from io import BytesIO
+import numpy as np
 
 
 app = Flask(__name__)
@@ -14,22 +15,52 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def process_image_and_text(image, pinde, masker):
-    # Convert to greyscale
-    greyscale_image = image.convert('L')
+
+def calculate_pixels(desired_size_cm, pinde, masker):
+    """Calculate the number of pixels needed based on the desired size and knitting gauge"""
+    # Calculate pixels needed for desired size
+    # If 'pinde' stitches x 'masker' rows = 10cm x 10cm
+    # Then for desired_size we need:
+    pixels_width = int((masker * desired_size_cm) / 10)
+    pixels_height = int((pinde * desired_size_cm) / 10)
+    return pixels_width, pixels_height
+
+def process_to_bw_pixels(image, width, height):
+    """Convert image to black and white pixels of specified size"""
+    # Resize image
+    resized = image.resize((width, height), Image.Resampling.LANCZOS)
+    # Convert to grayscale
+    grayscale: Image = resized.convert('L')
+    # Convert to pure black and white (threshold at 128)
+    bw_image = grayscale.point(lambda x: 0 if x < 210 else 255, '1')
+    return bw_image
+
+def generate_knitting_instructions(bw_image):
+    """Generate knitting instructions reading from bottom up, left to right"""
+    width, height = bw_image.size
+    pixels = np.array(bw_image)
+    instructions = []
     
-    # Extract text
-    extracted_text = "testing testing"
+    # Process rows from bottom to top
+    for row in reversed(range(height)):
+        current_color = pixels[row][0]  # Start with first pixel's color
+        count = 1
+        row_instructions = []
+        
+        # Process each pixel in the row
+        for col in range(1, width):
+            if pixels[row][col] == current_color:
+                count += 1
+            else:
+                row_instructions.append(f"{count} {'white' if current_color else 'black'}")
+                current_color = pixels[row][col]
+                count = 1
+                
+        # Add the last group
+        row_instructions.append(f"{count} {'white' if current_color else 'black'}")
+        instructions.append(", ".join(row_instructions))
     
-    # Log the received parameters (you can modify the processing based on these values)
-    print(f"Processing with pinde: {pinde}, masker: {masker}")
-    
-    # Convert processed image to base64
-    img_buffer = BytesIO()
-    greyscale_image.save(img_buffer, format='PNG')
-    img_str = base64.b64encode(img_buffer.getvalue()).decode()
-    
-    return img_str, extracted_text
+    return instructions
 
 @app.route('/')
 def home():
@@ -45,28 +76,44 @@ def process():
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
     
-    # Get pinde and masker values from form data
+    # Get parameters from form data
     try:
-        pinde = float(request.form.get('pinde', 0))
-        masker = float(request.form.get('masker', 0))
+        desired_size = float(request.form.get('size', 10))  # Default 10cm
+        pinde = float(request.form.get('pinde', 37))        # Default 37 stitches/10cm
+        masker = float(request.form.get('masker', 19))      # Default 19 rows/10cm
     except ValueError:
-        return jsonify({'error': 'Invalid numeric values for pinde or masker'}), 400
+        return jsonify({'error': 'Invalid numeric values'}), 400
     
     if file and allowed_file(file.filename):
         try:
-            # Open and process the image
+            # Open the image
             image = Image.open(file)
             
-            # Process image and get text
-            processed_image_b64, extracted_text = process_image_and_text(image, pinde, masker)
+            # Calculate required pixels
+            width, height = calculate_pixels(desired_size, pinde, masker)
+            
+            # Process image to black and white pixels
+            bw_image = process_to_bw_pixels(image, width, height)
+            
+            # Generate knitting instructions
+            instructions = generate_knitting_instructions(bw_image)
+            
+            # Save processed image to base64 for display
+            img_buffer = BytesIO()
+            bw_image = bw_image.resize((width*10, height*10), Image.Resampling.NEAREST)  # Scale up for better visibility
+            bw_image.save(img_buffer, format='PNG')
+            img_str = base64.b64encode(img_buffer.getvalue()).decode()
             
             return jsonify({
-                'message': 'File processed successfully',
-                'processed_image': processed_image_b64,
-                'extracted_text': extracted_text,
+                'message': 'Pattern generated successfully',
+                'processed_image': img_str,
+                'instructions': instructions,
                 'parameters': {
+                    'size': desired_size,
                     'pinde': pinde,
-                    'masker': masker
+                    'masker': masker,
+                    'final_width': width,
+                    'final_height': height
                 }
             })
             
