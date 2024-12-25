@@ -10,13 +10,13 @@
     <h1>MotiKnit</h1>
     <div class="upload-container">
         <form id="uploadForm" enctype="multipart/form-data">
-            <div class="form-grid" style="display: block">
+            <div class="form-grid">
                 <div class="form-group" style="width: 30%; text-align: left;">
                     <label for="fileInput">Upload billede af dit ønskede motiv:</label>
                     <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.gif">
                 </div>
                 
-                <div style="display: flex ; justify-content: space-between;"> 
+                <div style="display: flex; justify-content: space-between;"> 
                     <div class="form-group" style="width: 30%; text-align: left;">
                         <label for="size">Ønsket højde (cm):</label>
                         <input type="number" id="size" name="size" step="0.1" value="20">
@@ -35,6 +35,7 @@
                         <div class="help-text">Angiv antal pinde på 10 cm</div>
                     </div>
                 </div>
+
                 <div style="display: flex; justify-content: space-between;"> 
                     <div class="form-group" style="width: 30%; text-align: left;">
                         <label for="method">Strikkemetode:</label>
@@ -60,22 +61,24 @@
         </form>
     </div>
 
-    <div id="loading" class="loading">
+    <!-- Loading Spinner will be shown only when waiting for the backend response -->
+    <div id="loading" class="loading" style="display: none;">
         Generating knitting pattern... Please wait...
     </div>
 
-    <div class="image-grid">
+    <!-- Images will be shown after uploading and generating -->
+    <div class="image-grid" id="imageGrid" style="display: none;">
         <div class="image-container">
             <h2>Billede:</h2>
-            <img id="originalImage" class="preview-image" alt="Original image">
+            <img id="originalImage" class="preview-image" alt="Original image" style="display: none;">
         </div>
         <div class="image-container">
             <h2>Strikket motiv:</h2>
-            <img id="processedImage" class="preview-image" alt="Pattern preview">
+            <img id="processedImage" class="preview-image" alt="Pattern preview" style="display: none;">
         </div>
     </div>
 
-    <div id="result" class="result-container">
+    <div id="result" class="result-container" style="display: none;">
         <div id="parameters" class="parameters">
             <h3>Pattern Details:</h3>
             <p>Final Size: <span id="finalSize"></span> cm</p>
@@ -97,19 +100,23 @@
         const instructionsElement = document.getElementById('instructions');
         const errorElement = document.getElementById('error');
         const loadingElement = document.getElementById('loading');
+        const imageGrid = document.getElementById('imageGrid');
 
+        // Show the original image after it's uploaded
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     originalImage.src = e.target.result;
-                    originalImage.style.display = 'block';
+                    originalImage.style.display = 'block'; // Show image
+                    imageGrid.style.display = 'flex'; // Show image grid with flex layout
                 }
                 reader.readAsDataURL(file);
             }
         });
 
+        // Handle form submission and show loading state while waiting for the backend response
         document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -129,8 +136,9 @@
             try {
                 errorElement.textContent = '';
                 resultDiv.style.display = 'none';
-                loadingElement.style.display = 'block';
-                
+                loadingElement.style.display = 'block'; // Show loading
+
+                // Make request to backend
                 const response = await fetch('/process', {
                     method: 'POST',
                     body: formData
@@ -140,7 +148,7 @@
                 
                 if (response.ok) {
                     processedImage.src = `data:image/png;base64,${data.processed_image}`;
-                    processedImage.style.display = 'block';
+                    processedImage.style.display = 'block'; // Show the resulting image
                     
                     // Display parameters
                     document.getElementById('finalSize').textContent = data.parameters.size;
@@ -152,14 +160,14 @@
                     // Display instructions
                     instructionsElement.textContent = data.instructions.join('\n');
                     
-                    resultDiv.style.display = 'block';
+                    resultDiv.style.display = 'block'; // Show result container
                 } else {
                     throw new Error(data.error);
                 }
             } catch (error) {
                 errorElement.textContent = error.message;
             } finally {
-                loadingElement.style.display = 'none';
+                loadingElement.style.display = 'none'; // Hide loading
             }
         });
     </script>
