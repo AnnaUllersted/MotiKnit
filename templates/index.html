@@ -101,7 +101,7 @@
     </style>
 </head>
 <body>
-    <h1>Knitting Pattern Generator</h1>
+    <h1>MotiKnit</h1>
     
     <div class="upload-container">
         <form id="uploadForm" enctype="multipart/form-data">
@@ -206,7 +206,7 @@
                 const response = await fetch('/process', {
                     method: 'POST',
                     body: formData
-                });
+                })
                 
                 const data = await response.json();
                 
