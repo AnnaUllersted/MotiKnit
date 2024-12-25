@@ -107,30 +107,48 @@
         <form id="uploadForm" enctype="multipart/form-data">
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="fileInput">Select Image:</label>
+                    <label for="fileInput">Upload billede af dit ønskede motiv:</label>
                     <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.gif">
                 </div>
                 
                 <div class="form-group">
-                    <label for="size">Desired Size (cm):</label>
+                    <label for="size">Ønsket højde (cm):</label>
                     <input type="number" id="size" name="size" step="0.1" value="20">
-                    <div class="help-text">Final size of the knitted piece in centimeters</div>
+                    <div class="help-text">Fortæl hvilken højde motivet skal have på dit strikketøj</div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="masker">Masker (stitches per 10cm):</label>
+                    <label for="masker">Strikkefasthed, masker:</label>
                     <input type="number" id="masker" name="masker" step="0.1" value="19">
-                    <div class="help-text">Number of stitches in 10cm</div>
+                    <div class="help-text">Angiv antal masker på 10 cm</div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="pinde">Pinde (rows per 10cm):</label>
+                    <label for="pinde">Strikkefasthed, pinde:</label>
                     <input type="number" id="pinde" name="pinde" step="0.1" value="37">
-                    <div class="help-text">Number of rows in 10cm</div>
+                    <div class="help-text">Angiv antal pinde på 10 cm</div>
                 </div>
+
+                <div class="form-group">
+                    <label for="valg">Strikkemetode:</label>
+                    <select id="valg" name="valg">
+                        <option value="værdi1">Der strikkes på rundpind</option>
+                        <option value="værdi2">Der strikkes frem og tilbage</option>
+                    </select>
+                    <div class="help-text">Vælg mellem de to muligheder</div>
+                </div>     
+                
+                <div class="form-group">
+                    <label for="valg2">Arbejdets begyndelse:</label>
+                    <select id="valg2" name="valg2">
+                        <option value="værdi2_1">Der strikkes oppefra og ned</option>
+                        <option value="værdi2_2">Der strikkes nedefra og op</option>
+                    </select>
+                    <div class="help-text">Vælg mellem de to muligheder</div>
+                </div>   
             </div>
             
-            <button type="submit">Generate Pattern</button>
+            <button type="submit">Genererer mønster</button>
         </form>
     </div>
 
@@ -140,11 +158,11 @@
 
     <div class="image-grid">
         <div class="image-container">
-            <h2>Original Image:</h2>
+            <h2>Originalt billede:</h2>
             <img id="originalImage" class="preview-image" alt="Original image">
         </div>
         <div class="image-container">
-            <h2>Pattern Preview:</h2>
+            <h2>Strikket motiv:</h2>
             <img id="processedImage" class="preview-image" alt="Pattern preview">
         </div>
     </div>
