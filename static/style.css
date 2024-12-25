@@ -89,7 +89,7 @@ figure {
 }
 
 .page-border .bottom-border, .page-border .left-border, .page-border .right-border, .page-border .top-border {
-    background: #f3f3ef;
+    background: #797903;
     position: fixed;
     z-index: 9999;
 }
