@@ -100,11 +100,17 @@
 
         <h3>Knitting Instructions:</h3>
         <div id="instructions" class="instructions"></div>
+        <div class="download-container" id="downloadContainer" style="display: none;">
+            <button id="downloadPdfButton" class="download-button">Download PDF Pattern</button>
+        </div>
     </div>
 
     <p id="error" class="error"></p>
 
     <script>
+        let currentProcessedImage = null;
+        let currentParameters = null;
+        let currentInstructions = null;
         const fileInput = document.getElementById('fileInput');
         const originalImage = document.getElementById('originalImage');
         const processedImage = document.getElementById('processedImage');
@@ -161,7 +167,11 @@
                 if (response.ok) {
                     processedImage.src = `data:image/png;base64,${data.processed_image}`;
                     processedImage.style.display = 'block'; // Show the resulting image
-                    
+                    currentProcessedImage = data.processed_image;
+                    currentParameters = data.parameters;
+                    currentInstructions = data.instructions;
+
+
                     // Display parameters
                     document.getElementById('finalSize').textContent = data.parameters.size;
                     document.getElementById('finalSize2').textContent = data.parameters.size;
@@ -174,6 +184,7 @@
                     instructionsElement.textContent = data.instructions.join('\n');
                     
                     resultDiv.style.display = 'block'; // Show result container
+                    document.getElementById('downloadContainer').style.display = 'block';
                 } else {
                     throw new Error(data.error);
                 }
@@ -205,6 +216,40 @@
                 errorElement.textContent = 'Error loading preset image';
             }
         }
+
+        document.getElementById('downloadPdfButton').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/download-pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        processed_image: currentProcessedImage,
+                        parameters: currentParameters,
+                        instructions: currentInstructions
+                    })
+                });
+                
+                if (response.ok) {
+                    // Create a blob from the PDF stream
+                    const blob = await response.blob();
+                    // Create a link to download the blob
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'knitting_pattern.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    a.remove();
+                } else {
+                    throw new Error('Failed to generate PDF');
+                }
+            } catch (error) {
+                errorElement.textContent = 'Error generating PDF: ' + error.message;
+            }
+        });
     </script>
 </body>
 </html>

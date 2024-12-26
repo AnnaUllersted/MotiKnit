@@ -5,6 +5,7 @@ from PIL import Image
 import base64
 from io import BytesIO
 import numpy as np
+from pdf_generator import create_pattern_pdf
 
 app = Flask(__name__)
 
@@ -149,6 +150,24 @@ def process():
             return jsonify({'error': str(e)}), 500
             
     return jsonify({'error': 'File type not allowed'}), 400
+
+@app.route('/download-pdf', methods=['POST'])
+def download_pdf():
+    try:
+        data = request.json
+        pdf_buffer = create_pattern_pdf(
+            data['processed_image'],
+            data['parameters'],
+            data['instructions']
+        )
+        return send_file(
+            pdf_buffer,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name='knitting_pattern.pdf'
+        )
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 def is_it_true(value):
   return value.lower() == 'true'
