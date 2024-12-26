@@ -6,7 +6,6 @@ import base64
 from io import BytesIO
 import numpy as np
 
-
 app = Flask(__name__)
 
 # Configuration
@@ -35,48 +34,106 @@ def process_to_bw_pixels(image, width, height):
     bw_image = grayscale.point(lambda x: 0 if x < 210 else 255, '1')
     return bw_image
 
-def generate_knitting_instructions(bw_image,start):
+def generate_knitting_instructions(bw_image,start,method):
     """Generate knitting instructions reading from bottom up, left to right"""
     width, height = bw_image.size
     pixels = np.array(bw_image)
     instructions = []
-    if start == 0:        
-        # Process rows from top to bottom
-        for row in reversed(range(height)):
-            current_color = pixels[row][0]  # Start with first pixel's color
-            count = 1
-            row_instructions = []
-            
-            # Process each pixel in the row
-            for col in range(1, width):
-                if pixels[row][col] == current_color:
-                    count += 1
-                else:
-                    row_instructions.append(f"{count} {'white' if current_color else 'black'}")
-                    current_color = pixels[row][col]
-                    count = 1
-            # Add the last group
-            row_instructions.append(f"{count} {'white' if current_color else 'black'}")
-            instructions.append(", ".join(row_instructions))
-    else:         
-        # Process rows from bottom to top
-        for row in range(height):
-            current_color = pixels[row][0]  # Start with first pixel's color
-            count = 1
-            row_instructions = []
-            
-            # Process each pixel in the row
-            for col in range(1, width):
-                if pixels[row][col] == current_color:
-                    count += 1
-                else:
-                    row_instructions.append(f"{count} {'white' if current_color else 'black'}")
-                    current_color = pixels[row][col]
-                    count = 1
 
-            # Add the last group
-            row_instructions.append(f"{count} {'white' if current_color else 'black'}")
-            instructions.append(", ".join(row_instructions))
+    if start == 0: # from bottom to top
+        if method == 0: # knitting back and forth
+
+            # Process rows from bottom to top
+            for row in reversed(range(height)):
+                # Reverse the row if it is an even row in the original order
+
+                if row % 2 != 0:  # Check if the row number is odd
+                    row_data = pixels[row][::-1]
+                else:
+                    row_data = pixels[row]   
+                current_color = row_data[0]  # Start with the first pixel's color
+                count = 1
+                row_instructions = []
+
+                # Process each pixel in the row
+                for col in range(1, width):
+                    if row_data[col] == current_color:
+                        count += 1
+                    else:
+                        row_instructions.append(f"{count} {'white' if current_color == 1 else 'black'}")
+                        current_color = row_data[col]
+                        count = 1
+
+                # Add the last group
+                row_instructions.append(f"{count} {'white' if current_color == 1 else 'black'}")
+                instructions.append(", ".join(row_instructions))
+
+        else: # knitting around        
+
+            # Process rows from bottom to top
+            for row in reversed(range(height)):
+                current_color = pixels[row][-1]  # Start with the last pixel in the row (reversed row)
+                count = 1
+                row_instructions = []
+
+                # Process each pixel in the reversed row (from right to left)
+                for col in range(width - 2, -1, -1):  # Iterate backwards through the row
+                    if pixels[row][col] == current_color:
+                        count += 1
+                    else:
+                        row_instructions.append(f"{count} {'white' if current_color else 'black'}")
+                        current_color = pixels[row][col]
+                        count = 1
+
+                # Add the last group
+                row_instructions.append(f"{count} {'white' if current_color else 'black'}")
+                instructions.append(", ".join(row_instructions))
+
+    else:         
+        # Process rows from top to bottom
+        if method == 0: # Knitting back and forth
+            # Process rows from top to bottom
+            for row in range(height):
+                current_color = pixels[row][0]  # Start with first pixel's color
+                count = 1
+                row_instructions = []
+                
+                if row % 2 != 0:  # Check if the row number is odd
+                    row_data = pixels[row][::-1]
+                else:
+                    row_data = pixels[row]  
+
+                # Process each pixel in the row
+                for col in range(1, width):
+                    if row_data[col] == current_color:
+                        count += 1
+                    else:
+                        row_instructions.append(f"{count} {'white' if current_color else 'black'}")
+                        current_color = row_data[col]
+                        count = 1
+
+                # Add the last group
+                row_instructions.append(f"{count} {'white' if current_color else 'black'}")
+                instructions.append(", ".join(row_instructions))
+
+        else: # knitting around
+            for row in range(height):
+                current_color = pixels[row][0]  # Start with first pixel's color
+                count = 1
+                row_instructions = []
+                
+                # Process each pixel in the row
+                for col in range(1, width):
+                    if pixels[row][col] == current_color:
+                        count += 1
+                    else:
+                        row_instructions.append(f"{count} {'white' if current_color else 'black'}")
+                        current_color = pixels[row][col]
+                        count = 1
+
+                # Add the last group
+                row_instructions.append(f"{count} {'white' if current_color else 'black'}")
+                instructions.append(", ".join(row_instructions))
     return instructions
 
 @app.route('/')
@@ -115,7 +172,7 @@ def process():
             bw_image = process_to_bw_pixels(image, width, height)
             
             # Generate knitting instructions
-            instructions = generate_knitting_instructions(bw_image,start)
+            instructions = generate_knitting_instructions(bw_image,start,method)
             
             # Save processed image to base64 for display
             img_buffer = BytesIO()

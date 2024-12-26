@@ -57,7 +57,7 @@
                 </div> 
             </div>
             
-            <button type="submit">Genererer mønster</button>
+            <button type="submit">Genererer gratis mønster og opskrift</button>
         </form>
     </div>
 
@@ -69,18 +69,19 @@
     <!-- Images will be shown after uploading and generating -->
     <div class="image-grid" id="imageGrid" style="display: none;">
         <div class="image-container">
-            <h2>Billede:</h2>
+            <h3>Billede:</h3>
             <img id="originalImage" class="preview-image" alt="Original image" style="display: none;">
         </div>
         <div class="image-container">
-            <h2>Strikket motiv:</h2>
+            <h3>Strikket motiv:</h3>
             <img id="processedImage" class="preview-image" alt="Pattern preview" style="display: none;">
         </div>
     </div>
 
     <div id="result" class="result-container" style="display: none;">
         <div id="parameters" class="parameters">
-            <h3>Pattern Details:</h3>
+            <h2>Strikke Opskrift</h2>
+            <h3>Detailjer:</h3>
             <p>Final Size: <span id="finalSize"></span> cm</p>
             <p>Gauge: <span id="usedPinde"></span> stitches × <span id="usedMasker"></span> rows per 10cm</p>
             <p>Final Pattern Size: <span id="finalWidth"></span> stitches × <span id="finalHeight"></span> rows</p>
