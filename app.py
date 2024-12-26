@@ -60,25 +60,19 @@ def generate_knitting_instructions(bw_image, bottom_to_top, alternating_iteratio
         for i,row in enumerate(reversed(pixels)):
             if alternating_iteration: 
                 if i % 2 == 0: #even row number
-                    #row_data = reversed(row)
                     row_data = row[::-1] #reversed array
                 else: 
                     row_data = row
-                #do something
             else: #start lower right corner
-                #row_data = reversed(row)
                 row_data = row[::-1] #reversed array
             instructions.append(generate_row_instructions(row_data))
     else: #top to bottom
         for i,row in enumerate(pixels):
             if alternating_iteration:
-                #if i % 2 != 0: #even row number
                 if i % 2 == 0: #even row number
                     row_data = row
                 else: 
-                    #row_data = reversed(row)
                     row_data = row[::-1] #reversed array
-                #do something
             else: #start upper left corner
                 row_data = row
             instructions.append(generate_row_instructions(row_data))
@@ -100,11 +94,12 @@ def process():
     
     # Get parameters from form data
     try:
+        print(request.form)
         desired_size = float(request.form.get('size', 10))  # Default 10cm
         pinde = float(request.form.get('pinde', 37))        # Default 37 stitches/10cm
         masker = float(request.form.get('masker', 19))      # Default 19 rows/10cm
-        alternating_iteration = bool(request.form.get('alternating_iteration', False))  # Default er at der strikkes rundt på rundpind
-        bottom_to_top = bool(request.form.get('bottom_to_top', False))  # Default er at der startes fra toppen
+        alternating_iteration = bool(request.form.get('alternating_iteration', False, type=is_it_true))  # Default er at der strikkes rundt på rundpind
+        bottom_to_top = bool(request.form.get('bottom_to_top', False, type=is_it_true))  # Default er at der startes fra toppen
     except ValueError:
         return jsonify({'error': 'Invalid numeric values'}), 400
     
@@ -120,6 +115,7 @@ def process():
             bw_image = process_to_bw_pixels(image, width, height)
             print(bw_image.__class__)
             # Generate knitting instructions
+            print(bottom_to_top, alternating_iteration)
             instructions = generate_knitting_instructions(bw_image,bottom_to_top,alternating_iteration)
             
             # Save processed image to base64 for display
@@ -145,6 +141,10 @@ def process():
             return jsonify({'error': str(e)}), 500
             
     return jsonify({'error': 'File type not allowed'}), 400
+
+def is_it_true(value):
+  return value.lower() == 'true'
+
 
 if __name__ == '__main__':
     host = "0.0.0.0"
