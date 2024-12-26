@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <title>Knitting Pattern Generator</title>
+    <title>Strikke mønster generator</title>
 </head>
 <body>
     <h1>MotiKnit</h1>
@@ -13,9 +13,9 @@
             <div class="form-grid">
                 <div class="form-group" style="width: 30%; text-align: left;">
                     <label for="fileInput">Upload billede af dit ønskede motiv:</label>
-                    <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.gif">
+                    <input type="file" id="fileInput" accept=".jpg,.jpeg">
+                    <div class="help-text">Brug et .jpg eller .jpeg billede</div>
                 </div>
-                
                 <div style="display: flex; justify-content: space-between;"> 
                     <div class="form-group" style="width: 30%; text-align: left;">
                         <label for="size">Ønsket højde (cm):</label>
@@ -25,13 +25,13 @@
                     
                     <div class="form-group" style="width: 30%; text-align: left;">
                         <label for="masker">Strikkefasthed, masker:</label>
-                        <input type="number" id="masker" name="masker" step="0.1" value="19">
+                        <input type="number" id="masker" name="masker" step="1" value="19">
                         <div class="help-text">Angiv antal masker på 10 cm</div>
                     </div>
                     
                     <div class="form-group" style="width: 30%; text-align: left;">
                         <label for="pinde">Strikkefasthed, pinde:</label>
-                        <input type="number" id="pinde" name="pinde" step="0.1" value="37">
+                        <input type="number" id="pinde" name="pinde" step="1" value="37">
                         <div class="help-text">Angiv antal pinde på 10 cm</div>
                     </div>
                 </div>
@@ -82,7 +82,7 @@
         <div id="parameters" class="parameters">
             <h2>Strikkeopskrift</h2>
             <h3>Detaljer:</h3>
-            <p>Endelig størrelse: <span id="finalSize"></span> x <span id="finalSize"></span> cm</p>
+            <p>Endelig størrelse: <span id="finalSize"></span> x <span id="finalSize2"></span> cm</p>
             <p>Strikkefasthed: <span id="usedPinde"></span> pinde × <span id="usedMasker"></span> masker per 10cm</p>
             <p>Endeligt størrelse af mønster: <span id="finalWidth"></span> masker × <span id="finalHeight"></span> pinde</p>
         </div>
@@ -153,6 +153,7 @@
                     
                     // Display parameters
                     document.getElementById('finalSize').textContent = data.parameters.size;
+                    document.getElementById('finalSize2').textContent = data.parameters.size;
                     document.getElementById('usedPinde').textContent = data.parameters.pinde;
                     document.getElementById('usedMasker').textContent = data.parameters.masker;
                     document.getElementById('finalWidth').textContent = data.parameters.final_width;
