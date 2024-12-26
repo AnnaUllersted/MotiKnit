@@ -38,19 +38,19 @@
 
                 <div style="display: flex; justify-content: space-between;"> 
                     <div class="form-group" style="width: 30%; text-align: left;">
-                        <label for="method">Strikkemetode:</label>
-                        <select id="method" name="method">
-                            <option value=1>Der strikkes på rundpind</option>
-                            <option value=0>Der strikkes frem og tilbage</option>
+                        <label for="alternating_iteration">Strikkemetode:</label>
+                        <select id="alternating_iteration" name="alternating_iteration">
+                            <option value=false>Der strikkes på rundpind</option>
+                            <option value=true>Der strikkes frem og tilbage</option>
                         </select>
                         <div class="help-text">Vælg mellem de to muligheder</div>
                     </div>     
                     
                     <div class="form-group" style="width: 65%; text-align: left;">
-                        <label for="start">Arbejdets begyndelse:</label>
-                        <select id="start" name="valg2">
-                            <option value=1>Der strikkes oppefra og ned</option>
-                            <option value=0>Der strikkes nedefra og op</option>
+                        <label for="bottom_to_top">Arbejdets begyndelse:</label>
+                        <select id="bottom_to_top" name="valg2">
+                            <option value=false>Der strikkes oppefra og ned</option>
+                            <option value=true>Der strikkes nedefra og op</option>
                         </select>
                         <div class="help-text">Vælg mellem de to muligheder</div>
                     </div>  
@@ -80,14 +80,14 @@
 
     <div id="result" class="result-container" style="display: none;">
         <div id="parameters" class="parameters">
-            <h2>Strikke Opskrift</h2>
-            <h3>Detailjer:</h3>
+            <h2>Strikkeopskrift</h2>
+            <h3>Detaljer:</h3>
             <p>Final Size: <span id="finalSize"></span> cm</p>
             <p>Gauge: <span id="usedPinde"></span> stitches × <span id="usedMasker"></span> rows per 10cm</p>
             <p>Final Pattern Size: <span id="finalWidth"></span> stitches × <span id="finalHeight"></span> rows</p>
         </div>
 
-        <h3>Knitting Instructions (bottom to top, left to right):</h3>
+        <h3>Knitting Instructions:</h3>
         <div id="instructions" class="instructions"></div>
     </div>
 
@@ -131,8 +131,8 @@
             formData.append('size', document.getElementById('size').value);
             formData.append('pinde', document.getElementById('pinde').value);
             formData.append('masker', document.getElementById('masker').value);
-            formData.append('method', document.getElementById('method').value);
-            formData.append('start', document.getElementById('start').value);
+            formData.append('alternating_iteration', document.getElementById('alternating_iteration').value);
+            formData.append('bottom_to_top', document.getElementById('bottom_to_top').value);
             
             try {
                 errorElement.textContent = '';
