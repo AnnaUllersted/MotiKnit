@@ -5,6 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <title>Strikke mønster generator</title>
+    <style>
+        /* Add these mobile-specific styles */
+        @media (max-width: 768px) {
+            .upload-container {
+                padding: 10px;
+                max-width: 100%;
+            }
+            
+            .form-group {
+                width: 100% !important;
+                margin-bottom: 15px;
+            }
+            
+            .preset-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+            }
+            
+            .preset-image {
+                width: 100%;
+                height: auto;
+            }
+            
+            .image-grid {
+                flex-direction: column;
+            }
+            
+            .image-container {
+                width: 100% !important;
+                margin: 10px 0;
+            }
+            
+            .preview-image {
+                max-width: 100%;
+                height: auto;
+            }
+            
+            /* Stack the form inputs vertically on mobile */
+            div[style*="display: flex; justify-content: space-between"] {
+                flex-direction: column;
+            }
+            
+            /* Adjust button and file input container */
+            div[style*="display: flex; gap: 10px"] {
+                flex-direction: column;
+            }
+            
+            button[type="submit"] {
+                width: 100%;
+                margin-top: 10px;
+            }
+            
+            input[type="file"] {
+                width: 100%;
+            }
+            
+            /* Make inputs and selects full width */
+            input, select {
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+    </style>
 </head>
 <body>
     <h1>MotiKnit</h1>
@@ -12,9 +75,9 @@
         <form id="uploadForm" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="fileInput">Upload billede af dit ønskede motiv:</label>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <input type="file" id="fileInput" accept=".jpg,.jpeg" style="flex-grow: 1;">
-                    <button type="submit" style="white-space: nowrap;">Generer gratis mønster og opskrift</button>
+                <div class="mobile-input-container">
+                    <input type="file" id="fileInput" accept=".jpg,.jpeg">
+                    <button type="submit">Generer gratis mønster og opskrift</button>
                 </div>
                 <div class="help-text">Brug et .jpg eller .jpeg billede</div>
             </div>
@@ -30,45 +93,43 @@
                 </div>
                 <div class="help-text" style="text-align: left;">Eller vælg et af disse motiver</div>
             </div>
-                <div style="display: flex; justify-content: space-between;"> 
-                    <div class="form-group" style="width: 30%; text-align: left;">
-                        <label for="size">Ønsket højde (cm):</label>
-                        <input type="number" id="size" name="size" step="0.1" value="20">
-                        <div class="help-text">Fortæl hvilken højde motivet skal have på dit strikketøj</div>
-                    </div>
-                    
-                    <div class="form-group" style="width: 30%; text-align: left;">
-                        <label for="masker">Strikkefasthed, masker:</label>
-                        <input type="number" id="masker" name="masker" step="1" value="19">
-                        <div class="help-text">Angiv antal masker på 10 cm</div>
-                    </div>
-                    
-                    <div class="form-group" style="width: 30%; text-align: left;">
-                        <label for="pinde">Strikkefasthed, pinde:</label>
-                        <input type="number" id="pinde" name="pinde" step="1" value="37">
-                        <div class="help-text">Angiv antal pinde på 10 cm</div>
-                    </div>
+            <div class="parameters-container">
+                <div class="form-group">
+                    <label for="size">Ønsket højde (cm):</label>
+                    <input type="number" id="size" name="size" step="0.1" value="20">
+                    <div class="help-text">Fortæl hvilken højde motivet skal have på dit strikketøj</div>
                 </div>
-
-                <div style="display: flex; justify-content: space-between;"> 
-                    <div class="form-group" style="width: 30%; text-align: left;">
-                        <label for="alternating_iteration">Strikkemetode:</label>
-                        <select id="alternating_iteration" name="alternating_iteration">
-                            <option value=false>Der strikkes på rundpind</option>
-                            <option value=true>Der strikkes frem og tilbage</option>
-                        </select>
-                        <div class="help-text">Vælg mellem de to muligheder</div>
-                    </div>     
-                    
-                    <div class="form-group" style="width: 65%; text-align: left;">
-                        <label for="bottom_to_top">Arbejdets begyndelse:</label>
-                        <select id="bottom_to_top" name="bottom_to_top">
-                            <option value=false>Der strikkes oppefra og ned</option>
-                            <option value=true>Der strikkes nedefra og op</option>
-                        </select>
-                        <div class="help-text">Vælg mellem de to muligheder</div>
-                    </div>  
-                </div> 
+                
+                <div class="form-group">
+                    <label for="masker">Strikkefasthed, masker:</label>
+                    <input type="number" id="masker" name="masker" step="1" value="19">
+                    <div class="help-text">Angiv antal masker på 10 cm</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pinde">Strikkefasthed, pinde:</label>
+                    <input type="number" id="pinde" name="pinde" step="1" value="37">
+                    <div class="help-text">Angiv antal pinde på 10 cm</div>
+                </div>
+            </div>
+            <div class="methods-container">
+                <div class="form-group">
+                    <label for="alternating_iteration">Strikkemetode:</label>
+                    <select id="alternating_iteration" name="alternating_iteration">
+                        <option value=false>Der strikkes på rundpind</option>
+                        <option value=true>Der strikkes frem og tilbage</option>
+                    </select>
+                    <div class="help-text">Vælg mellem de to muligheder</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="bottom_to_top">Arbejdets begyndelse:</label>
+                    <select id="bottom_to_top" name="bottom_to_top">
+                        <option value=false>Der strikkes oppefra og ned</option>
+                        <option value=true>Der strikkes nedefra og op</option>
+                    </select>
+                    <div class="help-text">Vælg mellem de to muligheder</div>
+                </div>
             </div>
         </form>
     </div>
