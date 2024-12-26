@@ -14,7 +14,7 @@
                 <label for="fileInput">Upload billede af dit ønskede motiv:</label>
                 <div style="display: flex; gap: 10px; align-items: center;">
                     <input type="file" id="fileInput" accept=".jpg,.jpeg" style="flex-grow: 1;">
-                    <button type="submit" style="white-space: nowrap;">Genererer gratis mønster og opskrift</button>
+                    <button type="submit" style="white-space: nowrap;">Generer gratis mønster og opskrift</button>
                 </div>
                 <div class="help-text">Brug et .jpg eller .jpeg billede</div>
             </div>
@@ -171,7 +171,7 @@
                     currentProcessedImage = data.processed_image;
                     currentParameters = data.parameters;
                     currentInstructions = data.instructions;
-                    
+
                     processedImage.onload = () => {
                     document.getElementById('result').scrollIntoView({ 
                         behavior: 'smooth',
