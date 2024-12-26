@@ -88,6 +88,30 @@ button {
 button:hover {
     background-color: #391212;
 }
+.preset-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 70px);
+    gap: 10px;
+    margin: 20px 0 4px 0;
+    justify-content: start;
+}
+
+.preset-image {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+    background-color: white;
+    padding: 2px;
+    margin: 0;
+}
+
+.preset-image:hover {
+    border-color: #007bff;
+}
 
 /* Flexbox for Multiple Inputs */
 .form-group {

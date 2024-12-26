@@ -10,12 +10,23 @@
     <h1>MotiKnit</h1>
     <div class="upload-container">
         <form id="uploadForm" enctype="multipart/form-data">
-            <div class="form-grid">
-                <div class="form-group" style="width: 30%; text-align: left;">
-                    <label for="fileInput">Upload billede af dit ønskede motiv:</label>
-                    <input type="file" id="fileInput" accept=".jpg,.jpeg">
-                    <div class="help-text">Brug et .jpg eller .jpeg billede</div>
+            <div class="form-group">
+                <label for="fileInput">Upload billede af dit ønskede motiv:</label>
+                <input type="file" id="fileInput" accept=".jpg,.jpeg">
+                <div class="help-text">Brug et .jpg eller .jpeg billede</div>
+            </div>
+            
+            <div class="preset-images">
+                <div class="preset-grid">
+                    <img src="/static/preset1.jpg" class="preset-image" alt="Preset 1" onclick="selectPresetImage(this)">
+                    <img src="/static/preset2.jpg" class="preset-image" alt="Preset 2" onclick="selectPresetImage(this)">
+                    <img src="/static/preset3.jpg" class="preset-image" alt="Preset 3" onclick="selectPresetImage(this)">
+                    <img src="/static/preset4.jpg" class="preset-image" alt="Preset 4" onclick="selectPresetImage(this)">
+                    <img src="/static/preset5.jpg" class="preset-image" alt="Preset 5" onclick="selectPresetImage(this)">
+                    <img src="/static/preset6.jpg" class="preset-image" alt="Preset 6" onclick="selectPresetImage(this)">
                 </div>
+                <div class="help-text" style="text-align: left;">Eller vælg et af disse motiver</div>
+            </div>
                 <div style="display: flex; justify-content: space-between;"> 
                     <div class="form-group" style="width: 30%; text-align: left;">
                         <label for="size">Ønsket højde (cm):</label>
@@ -172,6 +183,28 @@
                 loadingElement.style.display = 'none'; // Hide loading
             }
         });
+
+        async function selectPresetImage(imgElement) {
+            try {
+                const response = await fetch(imgElement.src);
+                const blob = await response.blob();
+                const file = new File([blob], 'preset.jpg', { type: 'image/jpeg' });
+                
+                // Create a new FileList-like object
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                
+                // Update the file input
+                fileInput.files = dataTransfer.files;
+                
+                // Show the selected image in the preview
+                originalImage.src = imgElement.src;
+                originalImage.style.display = 'block';
+                imageGrid.style.display = 'flex';
+            } catch (error) {
+                errorElement.textContent = 'Error loading preset image';
+            }
+        }
     </script>
 </body>
 </html>
