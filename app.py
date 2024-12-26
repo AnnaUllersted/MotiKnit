@@ -122,11 +122,8 @@ def process():
             
             # Process image to black and white pixels
             bw_image = process_to_bw_pixels(image, width, height)
-            print(bw_image.__class__)
             # Generate knitting instructions
-            print(bottom_to_top, alternating_iteration)
             instructions = generate_knitting_instructions(bw_image,bottom_to_top,alternating_iteration)
-            print(instructions)
             # Save processed image to base64 for display
             img_buffer = BytesIO()
             bw_image = bw_image.resize((width*10, height*10), Image.Resampling.NEAREST)  # Scale up for better visibility
