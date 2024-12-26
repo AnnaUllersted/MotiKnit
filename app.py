@@ -104,7 +104,7 @@ def process():
         pinde = float(request.form.get('pinde', 37))        # Default 37 stitches/10cm
         masker = float(request.form.get('masker', 19))      # Default 19 rows/10cm
         alternating_iteration = bool(request.form.get('alternating_iteration', False))  # Default er at der strikkes rundt på rundpind
-        start = bool(request.form.get('bottom_to_top', False))  # Default er at der startes fra toppen
+        bottom_to_top = bool(request.form.get('bottom_to_top', False))  # Default er at der startes fra toppen
     except ValueError:
         return jsonify({'error': 'Invalid numeric values'}), 400
     
@@ -120,7 +120,7 @@ def process():
             bw_image = process_to_bw_pixels(image, width, height)
             print(bw_image.__class__)
             # Generate knitting instructions
-            instructions = generate_knitting_instructions(bw_image,start,alternating_iteration)
+            instructions = generate_knitting_instructions(bw_image,bottom_to_top,alternating_iteration)
             
             # Save processed image to base64 for display
             img_buffer = BytesIO()
