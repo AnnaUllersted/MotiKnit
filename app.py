@@ -34,20 +34,23 @@ def process_to_bw_pixels(image, width, height):
     bw_image = grayscale.point(lambda x: 0 if x < 210 else 255, '1')
     return bw_image
 
-def generate_row_instructions(row_data):
+def generate_row_instructions(row_data, ret_pind, row_number):
     current_color = row_data[0]  # Start with the first pixel's color
     count = 1
     row_instructions = []
-
+    if ret_pind:
+        row_instructions.append(f"Pind {row_number +1} er en retpind")
+    else:
+        row_instructions.append(f"Pind {row_number +1} er en vrangpind")
     # Process each pixel in the row
     for col in range(1, len(row_data)):
         if row_data[col] == current_color:
             count += 1
         else:
-            row_instructions.append(f"{count} {'white' if current_color == 1 else 'black'}")
+            row_instructions.append(f" {count} {'hvide masker' if current_color == 1 else 'sorte masker'}")
             current_color = row_data[col]
             count = 1
-    row_instructions.append(f"{count} {'white' if current_color == 1 else 'black'}")
+    row_instructions.append(f" {count} {'hvide masker' if current_color == 1 else 'sorte masker'}")
     return row_instructions
 
 def generate_knitting_instructions(bw_image, bottom_to_top, alternating_iteration):
@@ -58,24 +61,29 @@ def generate_knitting_instructions(bw_image, bottom_to_top, alternating_iteratio
 
     if bottom_to_top:
         for i,row in enumerate(reversed(pixels)):
+            right_to_left = True
             if alternating_iteration: 
-                if i % 2 == 0: #even row number
+                right_to_left = i % 2 == 0
+                if right_to_left: #even row number
                     row_data = row[::-1] #reversed array
                 else: 
                     row_data = row
             else: #start lower right corner
                 row_data = row[::-1] #reversed array
-            instructions.append(generate_row_instructions(row_data))
+            instructions.append(generate_row_instructions(row_data,right_to_left, i))
     else: #top to bottom
         for i,row in enumerate(pixels):
+            left_to_right = True
             if alternating_iteration:
-                if i % 2 == 0: #even row number
+                left_to_right = i % 2 == 0
+                if left_to_right: #even row number
                     row_data = row
                 else: 
                     row_data = row[::-1] #reversed array
             else: #start upper left corner
                 row_data = row
-            instructions.append(generate_row_instructions(row_data))
+            row_instructions = generate_row_instructions(row_data, left_to_right, i)
+            instructions.append(row_instructions)
     return instructions
 
 @app.route('/')
@@ -117,7 +125,7 @@ def process():
             # Generate knitting instructions
             print(bottom_to_top, alternating_iteration)
             instructions = generate_knitting_instructions(bw_image,bottom_to_top,alternating_iteration)
-            
+            print(instructions)
             # Save processed image to base64 for display
             img_buffer = BytesIO()
             bw_image = bw_image.resize((width*10, height*10), Image.Resampling.NEAREST)  # Scale up for better visibility
