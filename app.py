@@ -31,7 +31,7 @@ def process_to_bw_pixels(image, width, height):
     # Convert to grayscale
     grayscale: Image = resized.convert('L')
     # Convert to pure black and white (threshold at 128)
-    bw_image = grayscale.point(lambda x: 0 if x < 210 else 255, '1')
+    bw_image = grayscale.point(lambda x: 0 if x < 180 else 255, '1')
     return bw_image
 
 def generate_row_instructions(row_data, ret_pind, row_number):
