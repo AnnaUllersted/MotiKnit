@@ -1,4 +1,19 @@
 /* General Styles */
+
+@font-face {
+    font-family: 'Hatton';
+    src: url('fonts/PPHatton-Bold.otf') format('opentype'), /* Moderne browsere */
+    font-weight: normal; /* Kan være 'bold' eller 'normal' */
+    font-style: normal;  /* Kan være 'italic' eller 'normal' */
+}
+
+@font-face {
+    font-family: 'Quicksand';
+    src: url('fonts/Quicksand-Light.ttf') format('truetype'), /* Moderne browsere */
+    font-weight: normal; /* Kan være 'bold' eller 'normal' */
+    font-style: normal;  /* Kan være 'italic' eller 'normal' */
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,27 +21,50 @@
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #EDDBC2;
+    font-family: 'Quicksand', sans-serif;
+    background-color: #f8ecd9;
     color: #391212;
-    line-height: 1.6;
-    padding: 20px;
+    font-size: 1rem;
+    line-height: 1.0;
+    padding: 12px;
 }
 
 h1 {
     text-align: center;
-    font-family: 'Times New Roman', Times, serif;
+    font-family: 'Hatton', sans-serif;
     font-size: 6rem;
     color: #391212;
-    margin-bottom: 40px;
+    margin-bottom: 100px;
 }
 
 h2 {
     text-align: center;
-    font-family: 'Times New Roman', Times, serif;
+    font-family: 'Hatton', sans-serif;
     font-size: 4rem;
     color: #391212;
     margin-bottom: 40px;
+}
+
+.header-container {
+    display: flex;
+    justify-content: center; /* Centrer overskriften */
+    align-items: center; /* Juster lodret */
+    position: relative; /* Gør det muligt at placere billedet absolut */
+    margin: 20px;
+}
+
+.title {
+    margin: 0;
+    font-size: 5rem; /* Tilpas font-størrelsen */
+    text-align: center; /* Centrer overskriften */
+}
+
+.header-image {
+    position: absolute;
+    right: 10px; /* Placer billedet helt til højre */
+    height: 6rem; /* Match overskriftens højde */
+    width: auto; /* Bevar proportioner */
+    padding: 20px;
 }
 
 /* Form and Input Styles */
@@ -36,6 +74,7 @@ h2 {
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     margin-bottom: 40px;
+    font-family: 'Quicksand', sans-serif;
 }
 
 .form-group {
@@ -49,6 +88,7 @@ h2 {
     display: flex;
     gap: 10px;
     align-items: center;
+    font-family: 'Quicksand', sans-serif;
 }
 
 label {
@@ -56,6 +96,7 @@ label {
     font-weight: bold;
     margin-bottom: 8px;
     color: #391212;
+    font-family: 'Quicksand', sans-serif;
 }
 
 input[type="number"], 
@@ -67,6 +108,7 @@ select {
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 1rem;
+    font-family: 'Quicksand', sans-serif;
 }
 
 .help-text {
@@ -75,16 +117,25 @@ select {
     margin-top: 5px;
 }
 
+.center-button-container {
+    display: flex; /* Gør containeren fleksibel */
+    justify-content: center; /* Centrerer horisontalt */
+    align-items: center; /* Centrerer vertikalt */
+    margin: 22px 0; /* Valgfri margin for at give luft omkring knappen */
+}
+
 button {
     background-color: #391212;
     color: white;
-    padding: 12px 20px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 1rem;
-    border: none;
+    padding: 18px 40px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.2rem;
+    border: 12px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    text-align: center;
+    align-items: center;
 }
 
 button:hover {
@@ -173,6 +224,7 @@ button:hover {
 .download-container {
     margin-top: 20px;
     text-align: center;
+    font-family: 'Quicksand', sans-serif;
 }
 
 /* Parameters and Methods containers */
@@ -181,6 +233,7 @@ button:hover {
     display: flex;
     gap: 20px;
     margin: 15px 0;
+    font-family: 'Quicksand', sans-serif;
 }
 
 /* Mobile Responsive Design */
@@ -190,8 +243,8 @@ button:hover {
     }
 
     h1 {
-        font-size: 2.5rem;
-        margin-bottom: 20px;
+        font-size: 3.5rem;
+        margin-bottom: 10px;
     }
 
     h2 {
@@ -209,15 +262,14 @@ button:hover {
     }
 
     .preset-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        justify-content: center;
+        grid-template-columns: repeat(6, 1fr); /* 6 billeder på én linje */
+        gap: 5px !important; /* Reducer mellemrum mellem billederne */
     }
 
     .preset-image {
-        width: 100%;
-        height: auto;
-        aspect-ratio: 1;
+        max-width: 80px; /* Juster denne værdi for at gøre billederne mindre */
+        height: 80px;
+        object-fit: contain; /* Sørg for, at billederne holder deres proportioner */
     }
 
     .parameters-container,
@@ -265,7 +317,14 @@ button:hover {
 /* Additional mobile optimization for very small screens */
 @media (max-width: 360px) {
     .preset-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(6, 1fr); /* 6 billeder på én linje */
+        gap: 5px !important; /* Reducer mellemrum mellem billederne */
+    }
+
+    .preset-image {
+        max-width: 40px; /* Juster denne værdi for at gøre billederne mindre */
+        height: 40px;
+        object-fit: contain; /* Sørg for, at billederne holder deres proportioner */
     }
 
     h1 {

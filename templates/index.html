@@ -6,80 +6,22 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <title>Strikke mønster generator</title>
     <style>
-        /* Add these mobile-specific styles */
-        @media (max-width: 768px) {
-            .upload-container {
-                padding: 10px;
-                max-width: 100%;
-            }
-            
-            .form-group {
-                width: 100% !important;
-                margin-bottom: 15px;
-            }
-            
-            .preset-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 10px !important;
-            }
-            
-            .preset-image {
-                width: 100%;
-                height: auto;
-            }
-            
-            .image-grid {
-                flex-direction: column;
-            }
-            
-            .image-container {
-                width: 100% !important;
-                margin: 10px 0;
-            }
-            
-            .preview-image {
-                max-width: 100%;
-                height: auto;
-            }
-            
-            /* Stack the form inputs vertically on mobile */
-            div[style*="display: flex; justify-content: space-between"] {
-                flex-direction: column;
-            }
-            
-            /* Adjust button and file input container */
-            div[style*="display: flex; gap: 10px"] {
-                flex-direction: column;
-            }
-            
-            button[type="submit"] {
-                width: 100%;
-                margin-top: 10px;
-            }
-            
-            input[type="file"] {
-                width: 100%;
-            }
-            
-            /* Make inputs and selects full width */
-            input, select {
-                width: 100%;
-                box-sizing: border-box;
-            }
-        }
     </style>
 </head>
 <body>
-    <h1>MotiKnit</h1>
+    <div class="header-container">
+        <h1 class="title">MotiKnit</h1>
+        <img src="/static/Yarn.jpg" alt="Logo" class="header-image">
+    </div>
     <div class="upload-container">
         <form id="uploadForm" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="fileInput">Upload billede af dit ønskede motiv:</label>
                 <div class="mobile-input-container">
                     <input type="file" id="fileInput" accept=".jpg,.jpeg">
-                    <button type="submit">Generer gratis mønster og opskrift</button>
+                    <!-- <button type="submit">Generer gratis mønster og opskrift</button> -->
                 </div>
-                <div class="help-text">Brug et .jpg eller .jpeg billede</div>
+                <div class="help-text">Brug et .jpg eller .jpeg billede. Eller vælg et af disse motiver.</div>
             </div>
             
             <div class="preset-images">
@@ -91,7 +33,7 @@
                     <img src="/static/preset5.jpg" class="preset-image" alt="Preset 5" onclick="selectPresetImage(this)">
                     <img src="/static/preset6.jpg" class="preset-image" alt="Preset 6" onclick="selectPresetImage(this)">
                 </div>
-                <div class="help-text" style="text-align: left;">Eller vælg et af disse motiver</div>
+                <div class="help-text" style="text-align: left;"></div>
             </div>
             <div class="parameters-container">
                 <div class="form-group">
@@ -119,7 +61,7 @@
                         <option value=false>Der strikkes på rundpind</option>
                         <option value=true>Der strikkes frem og tilbage</option>
                     </select>
-                    <div class="help-text">Vælg mellem de to muligheder</div>
+                    <!-- <div class="help-text">Vælg mellem de to muligheder</div> -->
                 </div>
                 
                 <div class="form-group">
@@ -128,15 +70,24 @@
                         <option value=false>Der strikkes oppefra og ned</option>
                         <option value=true>Der strikkes nedefra og op</option>
                     </select>
-                    <div class="help-text">Vælg mellem de to muligheder</div>
+                    <!-- <div class="help-text">Vælg mellem de to muligheder</div> -->
+                </div>
+
+            </div>
+
+
+            <div class="center-button-container">
+                <div class="ButtonToGenerate">
+                    <button type="submit">Generer gratis mønster og opskrift</button>
                 </div>
             </div>
+
         </form>
     </div>
 
     <!-- Loading Spinner will be shown only when waiting for the backend response -->
     <div id="loading" class="loading" style="display: none;">
-        Generating knitting pattern... Please wait...
+        Genererer din strikkeopskrift... Vent...
     </div>
 
     <!-- Images will be shown after uploading and generating -->
@@ -160,10 +111,10 @@
             <p>Endeligt størrelse af mønster: <span id="finalWidth"></span> masker × <span id="finalHeight"></span> pinde</p>
         </div>
 
-        <h3>Knitting Instructions:</h3>
+        <h3>Instruktioner:</h3>
         <div id="instructions" class="instructions"></div>
         <div class="download-container" id="downloadContainer" style="display: none;">
-            <button id="downloadPdfButton" class="download-button">Download PDF Pattern</button>
+            <button id="downloadPdfButton" class="download-button">Download PDF</button>
         </div>
     </div>
 
@@ -240,7 +191,6 @@
                     });
                 };
 
-
                     // Display parameters
                     document.getElementById('finalSize').textContent = data.parameters.size;
                     document.getElementById('finalSize2').textContent = data.parameters.size;
@@ -290,9 +240,9 @@
             try {
                 // Show some loading state
                 const downloadButton = document.getElementById('downloadPdfButton');
-                const originalText = downloadButton.textContent;
-                downloadButton.textContent = 'Generating PDF...';
-                downloadButton.disabled = true;
+                const originalText = downloadButton.textContent;  // Save the original button text
+                downloadButton.textContent = 'Genererer PDF...';  // Change text to indicate generation
+                downloadButton.disabled = true;  // Disable button to prevent multiple clicks
 
                 const response = await fetch('/download-pdf', {
                     method: 'POST',
@@ -305,7 +255,7 @@
                         instructions: currentInstructions
                     })
                 });
-                
+
                 if (!response.ok) {
                     throw new Error('Failed to generate PDF');
                 }
@@ -314,22 +264,22 @@
                 
                 // Check if device is iOS
                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                
+
                 if (isIOS) {
                     // For iOS devices, open the PDF in a new tab
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        window.location.href = reader.result;
+                        window.location.href = reader.result;  // Open the PDF file in a new tab
                     };
                     reader.readAsDataURL(blob);
                 } else {
-                    // For other devices, try to download directly
+                    // For other devices, download the PDF directly
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = 'knitting_pattern.pdf';
+                    a.download = 'knitting_pattern.pdf';  // Set the filename for the PDF
                     a.style.display = 'none';
-                    
+
                     // For mobile Safari and some other mobile browsers
                     if (document.createEvent) {
                         const event = document.createEvent('MouseEvents');
@@ -338,8 +288,8 @@
                     } else {
                         a.click();
                     }
-                    
-                    // Clean up
+
+                    // Clean up the created URL after download
                     setTimeout(() => {
                         window.URL.revokeObjectURL(url);
                         document.body.removeChild(a);
@@ -350,10 +300,12 @@
             } finally {
                 // Reset button state
                 const downloadButton = document.getElementById('downloadPdfButton');
-                downloadButton.textContent = originalText;
-                downloadButton.disabled = false;
+                downloadButton.textContent = originalText;  // Restore the original button text
+                downloadButton.disabled = false;  // Enable the button again
             }
         });
+
+
     </script>
 </body>
 </html>
