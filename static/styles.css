@@ -3,15 +3,11 @@
 @font-face {
     font-family: 'Hatton';
     src: url('fonts/PPHatton-Bold.otf') format('opentype'), /* Moderne browsere */
-    font-weight: normal; /* Kan være 'bold' eller 'normal' */
-    font-style: normal;  /* Kan være 'italic' eller 'normal' */
 }
 
 @font-face {
     font-family: 'Quicksand';
     src: url('fonts/Quicksand-Light.ttf') format('truetype'), /* Moderne browsere */
-    font-weight: normal; /* Kan være 'bold' eller 'normal' */
-    font-style: normal;  /* Kan være 'italic' eller 'normal' */
 }
 
 * {
