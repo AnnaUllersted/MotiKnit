@@ -1,6 +1,5 @@
 from flask import Flask, request, render_template, jsonify, send_file
 import os
-from werkzeug.utils import secure_filename
 import base64
 from io import BytesIO
 import numpy as np
@@ -167,7 +166,9 @@ def process():
             logger.info("writing text")
             # Tilføj tekst ud for hver række
             draw = ImageDraw.Draw(canvas)
+            logger.info("using font")
             font = ImageFont.truetype("arial.ttf", size=14)  # Brug en passende skrifttype og størrelse
+            logger.info("writing rows of text")
             for y in range(height):
                 text = f"Pind {y + 1}"
                 text_position = (10, y * pixel_size + pixel_size // 4)  # Placer teksten midt på pixel-rækken
