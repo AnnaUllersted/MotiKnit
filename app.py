@@ -152,16 +152,25 @@ def process():
 
             print("bw_image class", bw_image.__class__)
             # Tegn det originale billede på det nye lærred med grå kanter
-            for y in range(height):
-                for x in range(width):
-                    pixel_color = bw_image.getpixel((x, y))  # 0 eller 255
-                    color = (0, 0, 0) if pixel_color == 0 else (255, 255, 255)  # Sort eller hvid
-                    pixel_x = text_space_width + x * pixel_size
-                    pixel_y = y * pixel_size
-                    # Fyld midten af det grå område med den originale pixels farve
-                    for i in range(1, pixel_size - 1):  # Undgå de yderste pixels (grå kant)
-                        for j in range(1, pixel_size - 1):
-                            canvas.putpixel((pixel_x + i, pixel_y + j), color)
+            try:
+
+                for y in range(height):
+                    for x in range(width):
+                        pixel_color = bw_image.getpixel((x, y))  # 0 eller 255
+                        color = (0, 0, 0) if pixel_color == 0 else (255, 255, 255)  # Sort eller hvid
+                        pixel_x = text_space_width + x * pixel_size
+                        pixel_y = y * pixel_size
+                        # Fyld midten af det grå område med den originale pixels farve
+                        for i in range(1, pixel_size - 1):  # Undgå de yderste pixels (grå kant)
+                            for j in range(1, pixel_size - 1):
+                                canvas.putpixel((pixel_x + i, pixel_y + j), color)
+            except:
+                print("height",height)
+                print("width",width)
+                print(bw_image)
+                print("pixel_size",pixel_size)
+                print(canvas)
+                logger.info("caught expection in creating new image")
 
             logger.info("writing text")
             # Tilføj tekst ud for hver række
@@ -226,4 +235,4 @@ if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
     logger.info('Started')
-    app.run(host=host, port=port, debug=True)
+    app.run(host=host, port=port, debug=False)
