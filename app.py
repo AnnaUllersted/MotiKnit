@@ -170,7 +170,7 @@ def process():
                 print(bw_image)
                 print("pixel_size",pixel_size)
                 print(canvas)
-                logger.info("caught expection in creating new image")
+                logger.info("caught expection in creating new")
 
             logger.info("writing text")
             # Tilføj tekst ud for hver række
@@ -236,3 +236,5 @@ if __name__ == '__main__':
 
     logger.info('Started')
     app.run(host=host, port=port, debug=False)
+    app.logger.addHandler(logging.StreamHandler(sys.stdout))
+    app.logger.setLevel(logging.ERROR)
