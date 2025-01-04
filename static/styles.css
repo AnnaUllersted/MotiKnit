@@ -2,12 +2,12 @@
 
 @font-face {
     font-family: 'Hatton';
-    src: url('fonts/PPHatton-Bold.otf') format('opentype'), /* Moderne browsere */
+    src: url('PPHatton-Bold.otf') format('opentype'), /* Moderne browsere */
 }
 
 @font-face {
     font-family: 'Quicksand';
-    src: url('fonts/Quicksand-Light.ttf') format('truetype'), /* Moderne browsere */
+    src: url('Quicksand-Light.ttf') format('truetype'), /* Moderne browsere */
 }
 
 * {
