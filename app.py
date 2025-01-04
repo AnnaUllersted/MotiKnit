@@ -117,94 +117,90 @@ def process():
         return jsonify({'error': 'Invalid numeric values'}), 400
     
     if file and allowed_file(file.filename):
+        # Open the image
+        logger.info("opening file")
+        image = Image.open(file)
+        
+        # Calculate required pixels
+        logger.info("calculating pixels")
+        width, height = calculate_pixels(desired_size, pinde, masker)
+        
+        # Process image to black and white pixels
+        logger.info("processing to black and white")
+        bw_image = process_to_bw_pixels(image, width, height)
+        # Generate knitting instructions
+        logger.info("generating knitting instructions")
+        instructions = generate_knitting_instructions(bw_image,bottom_to_top,alternating_iteration)
+
+        # Save processed image to base64 for display
+        img_buffer = BytesIO()
+
+        pixel_size = 20  # Justér for tykkelse af grå kant
+
+        # resize image so it fits a boundary
+        width_w_boundary = width*pixel_size
+        height_w_boundary = height*pixel_size
+
+        logger.info("creating canvas with background and boarder")
+        # Opret et nyt billede med ekstra plads til tekst og grå kanter
+        text_space_width = 60  # Bredden på pladsen til teksten
+        canvas = Image.new('RGB', (width_w_boundary + text_space_width, height_w_boundary), (120, 120, 120))  # Grå baggrund
+
+        logger.info("draw new image based on old")
+        print("canvas class", canvas.__class__)
+
+        print("bw_image class", bw_image.__class__)
+        # Tegn det originale billede på det nye lærred med grå kanter
         try:
-            # Open the image
-            logger.info("opening file")
-            image = Image.open(file)
-            
-            # Calculate required pixels
-            logger.info("calculating pixels")
-            width, height = calculate_pixels(desired_size, pinde, masker)
-            
-            # Process image to black and white pixels
-            logger.info("processing to black and white")
-            bw_image = process_to_bw_pixels(image, width, height)
-            # Generate knitting instructions
-            logger.info("generating knitting instructions")
-            instructions = generate_knitting_instructions(bw_image,bottom_to_top,alternating_iteration)
 
-            # Save processed image to base64 for display
-            img_buffer = BytesIO()
-
-            pixel_size = 20  # Justér for tykkelse af grå kant
-
-            # resize image so it fits a boundary
-            width_w_boundary = width*pixel_size
-            height_w_boundary = height*pixel_size
-
-            logger.info("creating canvas with background and boarder")
-            # Opret et nyt billede med ekstra plads til tekst og grå kanter
-            text_space_width = 60  # Bredden på pladsen til teksten
-            canvas = Image.new('RGB', (width_w_boundary + text_space_width, height_w_boundary), (120, 120, 120))  # Grå baggrund
-
-            logger.info("draw new image based on old")
-            print("canvas class", canvas.__class__)
-
-            print("bw_image class", bw_image.__class__)
-            # Tegn det originale billede på det nye lærred med grå kanter
-            try:
-
-                for y in range(height):
-                    for x in range(width):
-                        pixel_color = bw_image.getpixel((x, y))  # 0 eller 255
-                        color = (0, 0, 0) if pixel_color == 0 else (255, 255, 255)  # Sort eller hvid
-                        pixel_x = text_space_width + x * pixel_size
-                        pixel_y = y * pixel_size
-                        # Fyld midten af det grå område med den originale pixels farve
-                        for i in range(1, pixel_size - 1):  # Undgå de yderste pixels (grå kant)
-                            for j in range(1, pixel_size - 1):
-                                canvas.putpixel((pixel_x + i, pixel_y + j), color)
-            except:
-                print("height",height)
-                print("width",width)
-                print(bw_image)
-                print("pixel_size",pixel_size)
-                print(canvas)
-                logger.info("caught expection in creating new")
-
-            logger.info("writing text")
-            # Tilføj tekst ud for hver række
-            draw = ImageDraw.Draw(canvas)
-            logger.info("using font")
-            font = ImageFont.truetype("arial.ttf", size=14)  # Brug en passende skrifttype og størrelse
-            logger.info("writing rows of text")
             for y in range(height):
-                text = f"Pind {y + 1}"
-                text_position = (10, y * pixel_size + pixel_size // 4)  # Placer teksten midt på pixel-rækken
-                draw.text(text_position, text, font=font, fill=(0, 0, 0))  # Hvid tekst
+                for x in range(width):
+                    pixel_color = bw_image.getpixel((x, y))  # 0 eller 255
+                    color = (0, 0, 0) if pixel_color == 0 else (255, 255, 255)  # Sort eller hvid
+                    pixel_x = text_space_width + x * pixel_size
+                    pixel_y = y * pixel_size
+                    # Fyld midten af det grå område med den originale pixels farve
+                    for i in range(1, pixel_size - 1):  # Undgå de yderste pixels (grå kant)
+                        for j in range(1, pixel_size - 1):
+                            canvas.putpixel((pixel_x + i, pixel_y + j), color)
+        except:
+            print("height",height)
+            print("width",width)
+            print(bw_image)
+            print("pixel_size",pixel_size)
+            print(canvas)
+            logger.info("caught expection in creating new")
 
-            bw_image_for_display = canvas
-            logger.info("resizing image")
-            bw_image_for_display = bw_image_for_display.resize((width*pixel_size+text_space_width, height*pixel_size), Image.Resampling.NEAREST)  # Scale up for better visibility
-            bw_image_for_display.save(img_buffer, format='PNG')
-            img_buffer.seek(0)
-            img_str = base64.b64encode(img_buffer.getvalue()).decode()
+        logger.info("writing text")
+        # Tilføj tekst ud for hver række
+        draw = ImageDraw.Draw(canvas)
+        logger.info("using font")
+        font = ImageFont.truetype("arial.ttf", size=14)  # Brug en passende skrifttype og størrelse
+        logger.info("writing rows of text")
+        for y in range(height):
+            text = f"Pind {y + 1}"
+            text_position = (10, y * pixel_size + pixel_size // 4)  # Placer teksten midt på pixel-rækken
+            draw.text(text_position, text, font=font, fill=(0, 0, 0))  # Hvid tekst
 
-            return jsonify({
-                'message': 'Pattern generated successfully',
-                'processed_image': img_str,
-                'instructions': instructions,
-                'parameters': {
-                    'size': desired_size,
-                    'pinde': pinde,
-                    'masker': masker,
-                    'final_width': width,
-                    'final_height': height
-                }
-            })
-            
-        except Exception as e:
-            return jsonify({'error': str(e)}), 500
+        bw_image_for_display = canvas
+        logger.info("resizing image")
+        bw_image_for_display = bw_image_for_display.resize((width*pixel_size+text_space_width, height*pixel_size), Image.Resampling.NEAREST)  # Scale up for better visibility
+        bw_image_for_display.save(img_buffer, format='PNG')
+        img_buffer.seek(0)
+        img_str = base64.b64encode(img_buffer.getvalue()).decode()
+
+        return jsonify({
+            'message': 'Pattern generated successfully',
+            'processed_image': img_str,
+            'instructions': instructions,
+            'parameters': {
+                'size': desired_size,
+                'pinde': pinde,
+                'masker': masker,
+                'final_width': width,
+                'final_height': height
+            }
+        })
             
     return jsonify({'error': 'File type not allowed'}), 400
 
