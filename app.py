@@ -38,51 +38,6 @@ def process_to_bw_pixels(image, width, height):
     # Convert to pure black and white (threshold at 128)
     bw_image = grayscale.point(lambda x: 0 if x < 130 else 255, '1')
 
-    # Størrelsen af hver pixel inkl. grå kant
-    pixel_size = 20  # Justér for tykkelse af grå kant
-
-    # resize image så det passer ind i en ramme
-    width_w_boundary = width * pixel_size
-    height_w_boundary = height * pixel_size
-    resized = image.resize((width_w_boundary, height_w_boundary), Image.Resampling.LANCZOS)
-
-    # Opret et nyt billede med ekstra plads til tekst og grå kanter
-    text_space_width = 100  # Bredden på pladsen til teksten
-    canvas = Image.new('RGB', (width_w_boundary + text_space_width, height_w_boundary), (128, 128, 128))  # Grå baggrund
-
-    img_buffer = BytesIO()
-    #bw_image_for_display.save(img_buffer, format='PNG')
-    
-
-
-    # Tegn det originale billede på det nye lærred med grå kanter
-    for y in range(height):
-        for x in range(width):
-            pixel_color = bw_image.getpixel((x, y))  # 0 eller 255
-            color = (0, 0, 0) if pixel_color == 0 else (255, 255, 255)  # Sort eller hvid
-            pixel_x = text_space_width + x * pixel_size  # Start efter tekstområdet
-            pixel_y = y * pixel_size
-            # Fyld midten af det grå område med den originale pixels farve
-            for i in range(1, pixel_size - 1):  # Undgå de yderste pixels (grå kant)
-                for j in range(1, pixel_size - 1):
-                    canvas.putpixel((pixel_x + i, pixel_y + j), color)
-
-    # Tilføj tekst ud for hver række
-    draw = ImageDraw.Draw(canvas)
-    font = ImageFont.truetype("arial.ttf", size=14)  # Brug en passende skrifttype og størrelse
-    for y in range(height):
-        text = f"Pind {y + 1}"
-        text_position = (10, y * pixel_size + pixel_size // 4)  # Placer teksten midt på pixel-rækken
-        draw.text(text_position, text, font=font, fill=(0, 0, 0))  # Hvid tekst
-
-    
-    bw_image_for_display = canvas
-    bw_image_for_display = bw_image_for_display.resize((width*pixel_size+text_space_width, height*pixel_size), Image.Resampling.NEAREST)  # Scale up for better visibility
-    bw_image_for_display.save(img_buffer, format='PNG')
-    img_buffer.seek(0)  # Sørg for, at bufferens pointer er sat korrekt
-    #img_str = base64.b64encode(img_buffer.getvalue()).decode()
-    img_str = base64.b64encode(img_buffer.getvalue()).decode('utf-8')
-
     return bw_image
 
 def generate_row_instructions(row_data, ret_pind, row_number):
