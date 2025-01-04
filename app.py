@@ -147,36 +147,22 @@ def process():
         canvas = Image.new('RGB', (width_w_boundary + text_space_width, height_w_boundary), (120, 120, 120))  # Grå baggrund
 
         logger.info("draw new image based on old")
-        print("canvas class", canvas.__class__)
-
-        print("bw_image class", bw_image.__class__)
         # Tegn det originale billede på det nye lærred med grå kanter
-        try:
+        for y in range(height):
+            for x in range(width):
+                pixel_color = bw_image.getpixel((x, y))  # 0 eller 255
+                color = (0, 0, 0) if pixel_color == 0 else (255, 255, 255)  # Sort eller hvid
+                pixel_x = text_space_width + x * pixel_size
+                pixel_y = y * pixel_size
+                # Fyld midten af det grå område med den originale pixels farve
+                for i in range(1, pixel_size - 1):  # Undgå de yderste pixels (grå kant)
+                    for j in range(1, pixel_size - 1):
+                        canvas.putpixel((pixel_x + i, pixel_y + j), color)
 
-            for y in range(height):
-                for x in range(width):
-                    pixel_color = bw_image.getpixel((x, y))  # 0 eller 255
-                    color = (0, 0, 0) if pixel_color == 0 else (255, 255, 255)  # Sort eller hvid
-                    pixel_x = text_space_width + x * pixel_size
-                    pixel_y = y * pixel_size
-                    # Fyld midten af det grå område med den originale pixels farve
-                    for i in range(1, pixel_size - 1):  # Undgå de yderste pixels (grå kant)
-                        for j in range(1, pixel_size - 1):
-                            canvas.putpixel((pixel_x + i, pixel_y + j), color)
-        except:
-            print("height",height)
-            print("width",width)
-            print(bw_image)
-            print("pixel_size",pixel_size)
-            print(canvas)
-            logger.info("caught expection in creating new")
-
-        logger.info("writing text")
+        logger.info("writing text on image")
         # Tilføj tekst ud for hver række
         draw = ImageDraw.Draw(canvas)
-        logger.info("using font")
         font = ImageFont.truetype("arial.ttf", size=14)  # Brug en passende skrifttype og størrelse
-        logger.info("writing rows of text")
         for y in range(height):
             text = f"Pind {y + 1}"
             text_position = (10, y * pixel_size + pixel_size // 4)  # Placer teksten midt på pixel-rækken
