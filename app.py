@@ -149,6 +149,9 @@ def process():
             canvas = Image.new('RGB', (width_w_boundary + text_space_width, height_w_boundary), (120, 120, 120))  # Grå baggrund
 
             logger.info("draw new image based on old")
+            print("canvas class", canvas.__class__)
+
+            print("bw_image class", bw_image.__class__)
             # Tegn det originale billede på det nye lærred med grå kanter
             for y in range(height):
                 for x in range(width):
