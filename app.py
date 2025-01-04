@@ -143,11 +143,12 @@ def process():
             width_w_boundary = width*pixel_size
             height_w_boundary = height*pixel_size
 
-            logger.info("creating image with background and boarder")
+            logger.info("creating canvas with background and boarder")
             # Opret et nyt billede med ekstra plads til tekst og grå kanter
             text_space_width = 60  # Bredden på pladsen til teksten
             canvas = Image.new('RGB', (width_w_boundary + text_space_width, height_w_boundary), (120, 120, 120))  # Grå baggrund
 
+            logger.info("draw new image based on old")
             # Tegn det originale billede på det nye lærred med grå kanter
             for y in range(height):
                 for x in range(width):
@@ -160,6 +161,7 @@ def process():
                         for j in range(1, pixel_size - 1):
                             canvas.putpixel((pixel_x + i, pixel_y + j), color)
 
+            logger.info("writing text")
             # Tilføj tekst ud for hver række
             draw = ImageDraw.Draw(canvas)
             font = ImageFont.truetype("arial.ttf", size=14)  # Brug en passende skrifttype og størrelse
@@ -170,7 +172,6 @@ def process():
 
             bw_image_for_display = canvas
             logger.info("resizing image")
-
             bw_image_for_display = bw_image_for_display.resize((width*pixel_size+text_space_width, height*pixel_size), Image.Resampling.NEAREST)  # Scale up for better visibility
             bw_image_for_display.save(img_buffer, format='PNG')
             img_buffer.seek(0)
