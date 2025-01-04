@@ -6,8 +6,12 @@ from io import BytesIO
 import numpy as np
 from pdf_generator import create_pattern_pdf
 from PIL import Image, ImageDraw, ImageFont
+import logging
+import sys
+
 
 app = Flask(__name__)
+logger = logging.getLogger(__name__)
 
 # Configuration
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg'}
@@ -139,6 +143,7 @@ def home():
 
 @app.route('/process', methods=['POST'])
 def process():
+    logging.info("Processing request")
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
     
@@ -149,7 +154,6 @@ def process():
     
     # Get parameters from form data
     try:
-        print(request.form)
         desired_size = float(request.form.get('size', 10))  # Default 10cm
         pinde = float(request.form.get('pinde', 37))        # Default 37 stitches/10cm
         masker = float(request.form.get('masker', 19))      # Default 19 rows/10cm
@@ -161,30 +165,30 @@ def process():
     if file and allowed_file(file.filename):
         try:
             # Open the image
+            logger.info("opening file")
             image = Image.open(file)
             
             # Calculate required pixels
+            logger.info("calculating pixels")
             width, height = calculate_pixels(desired_size, pinde, masker)
             
             # Process image to black and white pixels
+            logger.info("processing to black and white")
             bw_image = process_to_bw_pixels(image, width, height)
             # Generate knitting instructions
+            logger.info("generating knitting instructions")
             instructions = generate_knitting_instructions(bw_image,bottom_to_top,alternating_iteration)
+
             # Save processed image to base64 for display
             img_buffer = BytesIO()
-            #bw_image = bw_image.resize((width*10, height*10), Image.Resampling.NEAREST)  # Scale up for better visibility
-            #bw_image.save(img_buffer, format='PNG')
-            #img_str = base64.b64encode(img_buffer.getvalue()).decode()
 
-            # kode her der laver om på billedet
-            # Størrelsen af hver pixel inkl. grå kant
             pixel_size = 20  # Justér for tykkelse af grå kant
 
             # resize image so it fits a boundary
             width_w_boundary = width*pixel_size
             height_w_boundary = height*pixel_size
-            resized = image.resize((width_w_boundary, height_w_boundary), Image.Resampling.LANCZOS)
 
+            logger.info("creating image with background and boarder")
             # Opret et nyt billede med ekstra plads til tekst og grå kanter
             text_space_width = 60  # Bredden på pladsen til teksten
             canvas = Image.new('RGB', (width_w_boundary + text_space_width, height_w_boundary), (120, 120, 120))  # Grå baggrund
@@ -210,9 +214,11 @@ def process():
                 draw.text(text_position, text, font=font, fill=(0, 0, 0))  # Hvid tekst
 
             bw_image_for_display = canvas
+            logger.info("resizing image")
 
             bw_image_for_display = bw_image_for_display.resize((width*pixel_size+text_space_width, height*pixel_size), Image.Resampling.NEAREST)  # Scale up for better visibility
             bw_image_for_display.save(img_buffer, format='PNG')
+            img_buffer.seek(0)
             img_str = base64.b64encode(img_buffer.getvalue()).decode()
 
             return jsonify({
@@ -257,4 +263,7 @@ def is_it_true(value):
 if __name__ == '__main__':
     host = "0.0.0.0"
     port = int(os.environ.get('PORT', 33507))
+    logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+
+    logger.info('Started')
     app.run(host=host, port=port, debug=True)
