@@ -313,7 +313,7 @@ button:hover {
 }
 
 /* Additional mobile optimization for very small screens */
-@media (max-width: 380px) {
+@media (max-width: 415px) {
     .parameters-container,
     .methods-container {
         flex-direction: column;
