@@ -28,7 +28,7 @@ body {
 h1 {
     text-align: center;
     font-family: 'Hatton', sans-serif;
-    font-size: 6rem;
+    font-size: 5rem;
     color: #391212;
     margin-bottom: 100px;
 }
@@ -47,12 +47,6 @@ h2 {
     align-items: center; /* Juster lodret */
     position: relative; /* Gør det muligt at placere billedet absolut */
     margin: 20px;
-}
-
-.title {
-    margin: 0;
-    font-size: 5rem; /* Tilpas font-størrelsen */
-    text-align: center; /* Centrer overskriften */
 }
 
 .header-image {
@@ -233,13 +227,13 @@ button:hover {
 }
 
 /* Mobile Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 770px) {
     body {
         padding: 10px;
     }
 
     h1 {
-        font-size: 3.5rem;
+        font-size: 4rem;
         margin-bottom: 10px;
     }
 
@@ -257,26 +251,17 @@ button:hover {
         flex-direction: column;
     }
 
-    .preset-grid {
-        grid-template-columns: repeat(6, 1fr); /* 6 billeder på én linje */
-        gap: 5px !important; /* Reducer mellemrum mellem billederne */
-    }
-
     .preset-image {
-        max-width: 80px; /* Juster denne værdi for at gøre billederne mindre */
-        height: 80px;
+        max-width: 70px; /* Juster denne værdi for at gøre billederne mindre */
+        height: 70px;
         object-fit: contain; /* Sørg for, at billederne holder deres proportioner */
     }
 
-    .parameters-container,
-    .methods-container {
-        flex-direction: column;
-        gap: 10px;
-    }
-
     .image-grid {
-        flex-direction: column;
-        gap: 20px;
+        display: flex;
+        gap: 1px;
+        justify-content: center;
+        margin-top: 40px;
     }
 
     .image-container {
@@ -308,26 +293,68 @@ button:hover {
     .help-text {
         font-size: 0.8rem;
     }
+
+    .header-container {
+        display: flex;
+        justify-content: center; /* Centrer overskriften */
+        align-items: center; /* Juster lodret */
+        position: relative; /* Gør det muligt at placere billedet absolut */
+        margin-bottom: 1px;
+    }
+
+    .header-image {
+        position: absolute;
+        right: -33px; /* Placer billedet helt til højre */
+        height: 7rem; /* Match overskriftens højde */
+        width: auto; /* Bevar proportioner */
+        margin-bottom: 8px;
+        margin-right: 0px;
+    }
 }
 
 /* Additional mobile optimization for very small screens */
-@media (max-width: 360px) {
+@media (max-width: 380px) {
+    .parameters-container,
+    .methods-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+
     .preset-grid {
         grid-template-columns: repeat(6, 1fr); /* 6 billeder på én linje */
         gap: 5px !important; /* Reducer mellemrum mellem billederne */
     }
 
     .preset-image {
-        max-width: 40px; /* Juster denne værdi for at gøre billederne mindre */
-        height: 40px;
+        max-width: 45px; /* Juster denne værdi for at gøre billederne mindre */
+        height: 45px;
         object-fit: contain; /* Sørg for, at billederne holder deres proportioner */
     }
 
     h1 {
-        font-size: 2rem;
+        font-size: 2.5rem;
+        margin-bottom: 8px;
     }
 
     h2 {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
+    }
+
+    .header-container {
+        display: flex;
+        justify-content: center; /* Centrer overskriften */
+        align-items: center; /* Juster lodret */
+        position: relative; /* Gør det muligt at placere billedet absolut */
+        margin-bottom: 1px;
+    }
+    
+    .header-image {
+        position: absolute;
+        right: -33px; /* Placer billedet helt til højre */
+        height: 5rem; /* Match overskriftens højde */
+        width: auto; /* Bevar proportioner */
+        margin-bottom: 8px;
+        margin-right: 0px;
     }
 }
