@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <title>Strikke mønster generator</title>
     <style>
     </style>
@@ -237,73 +238,43 @@
         }
 
         document.getElementById('downloadPdfButton').addEventListener('click', async () => {
-            try {
-                // Show some loading state
-                const downloadButton = document.getElementById('downloadPdfButton');
-                const originalText = downloadButton.textContent;  // Save the original button text
-                downloadButton.textContent = 'Genererer PDF...';  // Change text to indicate generation
-                downloadButton.disabled = true;  // Disable button to prevent multiple clicks
+        try {
+            // Show loading state
+            const downloadButton = document.getElementById('downloadPdfButton');
+            const originalText = downloadButton.textContent;
+            downloadButton.textContent = 'Genererer PDF...';
+            downloadButton.disabled = true;
 
-                const response = await fetch('/download-pdf', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        processed_image: currentProcessedImage,
-                        parameters: currentParameters,
-                        instructions: currentInstructions
-                    })
-                });
+            const response = await fetch('/download-pdf', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    processed_image: currentProcessedImage,
+                    parameters: currentParameters,
+                    instructions: currentInstructions
+                })
+            });
 
-                if (!response.ok) {
-                    throw new Error('Failed to generate PDF');
-                }
-
-                const blob = await response.blob();
-                
-                // Check if device is iOS
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-                if (isIOS) {
-                    // For iOS devices, open the PDF in a new tab
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        window.location.href = reader.result;  // Open the PDF file in a new tab
-                    };
-                    reader.readAsDataURL(blob);
-                } else {
-                    // For other devices, download the PDF directly
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'knitting_pattern.pdf';  // Set the filename for the PDF
-                    a.style.display = 'none';
-
-                    // For mobile Safari and some other mobile browsers
-                    if (document.createEvent) {
-                        const event = document.createEvent('MouseEvents');
-                        event.initEvent('click', true, true);
-                        a.dispatchEvent(event);
-                    } else {
-                        a.click();
-                    }
-
-                    // Clean up the created URL after download
-                    setTimeout(() => {
-                        window.URL.revokeObjectURL(url);
-                        document.body.removeChild(a);
-                    }, 100);
-                }
-            } catch (error) {
-                errorElement.textContent = 'Error generating PDF: ' + error.message;
-            } finally {
-                // Reset button state
-                const downloadButton = document.getElementById('downloadPdfButton');
-                downloadButton.textContent = originalText;  // Restore the original button text
-                downloadButton.disabled = false;  // Enable the button again
+            if (!response.ok) {
+                throw new Error('Failed to generate PDF');
             }
-        });
+
+            const blob = await response.blob();
+
+            // Use FileSaver.js for other devices
+            saveAs(blob, 'knitting_pattern.pdf');
+            
+        } catch (error) {
+            errorElement.textContent = 'Error generating PDF: ' + error.message;
+        } finally {
+            // Reset button state
+            const downloadButton = document.getElementById('downloadPdfButton');
+            downloadButton.textContent = originalText;
+            downloadButton.disabled = false;
+        }
+    });
 
 
     </script>

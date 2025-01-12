@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify, send_file
+from flask import Flask, request, render_template, jsonify, send_file, make_response
 import os
 import base64
 from io import BytesIO
@@ -213,12 +213,10 @@ def download_pdf():
             data['parameters'],
             data['instructions']
         )
-        return send_file(
-            pdf_buffer,
-            mimetype='application/pdf',
-            as_attachment=True,
-            download_name='knitting_pattern.pdf'
-        )
+        response = make_response(pdf_buffer.getvalue())
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = 'inline; filename=knitting_pattern.pdf'
+        return response
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
