@@ -8,7 +8,6 @@ from PIL import Image, ImageDraw, ImageFont
 import logging
 import sys
 
-
 app = Flask(__name__)
 logger = logging.getLogger(__name__)
 
@@ -19,21 +18,27 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def calculate_pixels(desired_size_cm, pinde, masker):
+def calculate_pixels(desired_height_cm, image, pinde, masker):
     """Calculate the number of pixels needed based on the desired size and knitting gauge"""
+    # Get the original dimensions
+    original_width, original_height = image.size
+    # Calculate aspect ratio
+    aspect_ratio = original_width / original_height
     # Calculate pixels needed for desired size
-    # If 'pinde' stitches x 'masker' rows = 10cm x 10cm
-    # Then for desired_size we need:
-    pixels_width = int((masker * desired_size_cm) / 10)
-    pixels_height = int((pinde * desired_size_cm) / 10)
-    return pixels_width, pixels_height
+    desired_width_cm = desired_height_cm * aspect_ratio
+    target_width_px = int((masker * desired_width_cm) / 10)
+    target_height_px = int((pinde * desired_height_cm) / 10)
+    return target_width_px, target_height_px
 
-def process_to_bw_pixels(image, width, height):
+def process_to_bw_pixels(image, target_width_px, target_height_px):
     """Convert image to black and white pixels of specified size"""
+
     # Resize image
-    resized = image.resize((width, height), Image.Resampling.LANCZOS)
+    resized = image.resize((target_width_px, target_height_px), Image.Resampling.LANCZOS)
+
     # Convert to grayscale
     grayscale: Image = resized.convert('L')
+
     # Convert to pure black and white (threshold at 128)
     bw_image = grayscale.point(lambda x: 0 if x < 130 else 255, '1')
 
@@ -91,6 +96,52 @@ def generate_knitting_instructions(bw_image, bottom_to_top, alternating_iteratio
             instructions.append(row_instructions)
     return instructions
 
+def generate_illustration(target_width_px, target_height_px, bw_image):
+    """Generate knitting illustration with grey area and row numbers """
+    # Save processed image to base64 for display
+    img_buffer = BytesIO()
+
+    pixel_size = 20  # Justér for tykkelse af grå kant
+
+    # resize image so it fits a boundary
+    width_w_boundary = target_width_px*pixel_size
+    height_w_boundary = target_height_px*pixel_size
+
+    logger.info("creating canvas with background and boarder")
+    # Opret et nyt billede med ekstra plads til tekst og grå kanter
+    text_space_width = 60  # Bredden på pladsen til teksten
+    canvas = Image.new('RGB', (width_w_boundary + text_space_width, height_w_boundary), (120, 120, 120))  # Grå baggrund
+
+    logger.info("draw new image based on old")
+    # Tegn det originale billede på det nye lærred med grå kanter
+    for y in range(target_height_px):
+        for x in range(target_width_px):
+            pixel_color = bw_image.getpixel((x, y))  # 0 eller 255
+            color = (0, 0, 0) if pixel_color == 0 else (255, 255, 255)  # Sort eller hvid
+            pixel_x = text_space_width + x * pixel_size
+            pixel_y = y * pixel_size
+            # Fyld midten af det grå område med den originale pixels farve
+            for i in range(1, pixel_size - 1):  # Undgå de yderste pixels (grå kant)
+                for j in range(1, pixel_size - 1):
+                    canvas.putpixel((pixel_x + i, pixel_y + j), color)
+
+    logger.info("writing text on image")
+    # Tilføj tekst ud for hver række
+    draw = ImageDraw.Draw(canvas)
+    font = ImageFont.truetype("arial.ttf", size=14)  # Brug en passende skrifttype og størrelse
+    for y in range(target_height_px):
+        text = f"Pind {y + 1}"
+        text_position = (10, y * pixel_size + pixel_size // 4)  # Placer teksten midt på pixel-rækken
+        draw.text(text_position, text, font=font, fill=(0, 0, 0))  # Hvid tekst
+
+    bw_image_for_display = canvas
+    logger.info("resizing image")
+    bw_image_for_display = bw_image_for_display.resize((target_width_px*pixel_size+text_space_width, target_height_px*pixel_size), Image.Resampling.NEAREST)  # Scale up for better visibility
+    bw_image_for_display.save(img_buffer, format='PNG')
+    img_buffer.seek(0)
+    img_str = base64.b64encode(img_buffer.getvalue()).decode()
+    return img_str
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -108,9 +159,9 @@ def process():
     
     # Get parameters from form data
     try:
-        desired_size = float(request.form.get('size', 10))  # Default 10cm
-        pinde = float(request.form.get('pinde', 37))        # Default 37 stitches/10cm
-        masker = float(request.form.get('masker', 19))      # Default 19 rows/10cm
+        desired_height_cm = float(request.form.get('size', 15))  # Default 15cm
+        pinde = float(request.form.get('pinde', 24))        # Default 24 stitches/10cm
+        masker = float(request.form.get('masker', 18))      # Default 18 rows/10cm
         alternating_iteration = bool(request.form.get('alternating_iteration', False, type=is_it_true))  # Default er at der strikkes rundt på rundpind
         bottom_to_top = bool(request.form.get('bottom_to_top', False, type=is_it_true))  # Default er at der startes fra toppen
     except ValueError:
@@ -123,68 +174,31 @@ def process():
         
         # Calculate required pixels
         logger.info("calculating pixels")
-        width, height = calculate_pixels(desired_size, pinde, masker)
-        
+        target_width_px, target_height_px = calculate_pixels(desired_height_cm, image, pinde, masker)
+
         # Process image to black and white pixels
         logger.info("processing to black and white")
-        bw_image = process_to_bw_pixels(image, width, height)
+        logger.info(target_height_px)
+        logger.info(target_width_px)
+        bw_image = process_to_bw_pixels(image, target_width_px, target_height_px)
+
         # Generate knitting instructions
         logger.info("generating knitting instructions")
         instructions = generate_knitting_instructions(bw_image,bottom_to_top,alternating_iteration)
 
-        # Save processed image to base64 for display
-        img_buffer = BytesIO()
-
-        pixel_size = 20  # Justér for tykkelse af grå kant
-
-        # resize image so it fits a boundary
-        width_w_boundary = width*pixel_size
-        height_w_boundary = height*pixel_size
-
-        logger.info("creating canvas with background and boarder")
-        # Opret et nyt billede med ekstra plads til tekst og grå kanter
-        text_space_width = 60  # Bredden på pladsen til teksten
-        canvas = Image.new('RGB', (width_w_boundary + text_space_width, height_w_boundary), (120, 120, 120))  # Grå baggrund
-
-        logger.info("draw new image based on old")
-        # Tegn det originale billede på det nye lærred med grå kanter
-        for y in range(height):
-            for x in range(width):
-                pixel_color = bw_image.getpixel((x, y))  # 0 eller 255
-                color = (0, 0, 0) if pixel_color == 0 else (255, 255, 255)  # Sort eller hvid
-                pixel_x = text_space_width + x * pixel_size
-                pixel_y = y * pixel_size
-                # Fyld midten af det grå område med den originale pixels farve
-                for i in range(1, pixel_size - 1):  # Undgå de yderste pixels (grå kant)
-                    for j in range(1, pixel_size - 1):
-                        canvas.putpixel((pixel_x + i, pixel_y + j), color)
-
-        logger.info("writing text on image")
-        # Tilføj tekst ud for hver række
-        draw = ImageDraw.Draw(canvas)
-        font = ImageFont.truetype("arial.ttf", size=14)  # Brug en passende skrifttype og størrelse
-        for y in range(height):
-            text = f"Pind {y + 1}"
-            text_position = (10, y * pixel_size + pixel_size // 4)  # Placer teksten midt på pixel-rækken
-            draw.text(text_position, text, font=font, fill=(0, 0, 0))  # Hvid tekst
-
-        bw_image_for_display = canvas
-        logger.info("resizing image")
-        bw_image_for_display = bw_image_for_display.resize((width*pixel_size+text_space_width, height*pixel_size), Image.Resampling.NEAREST)  # Scale up for better visibility
-        bw_image_for_display.save(img_buffer, format='PNG')
-        img_buffer.seek(0)
-        img_str = base64.b64encode(img_buffer.getvalue()).decode()
+        # Generate illustration
+        img_str = generate_illustration(target_width_px, target_height_px, bw_image)
 
         return jsonify({
             'message': 'Pattern generated successfully',
             'processed_image': img_str,
             'instructions': instructions,
             'parameters': {
-                'size': desired_size,
+                'size': desired_height_cm,
                 'pinde': pinde,
                 'masker': masker,
-                'final_width': width,
-                'final_height': height
+                'final_width': target_width_px,
+                'final_height': target_height_px
             }
         })
             
