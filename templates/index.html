@@ -73,6 +73,12 @@
                     </select>
                     <!-- <div class="help-text">Vælg mellem de to muligheder</div> -->
                 </div>
+
+                <div class="form-group">
+                    <label for="intensity">Intensitet af motivets farve:</label>
+                    <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+                    <p>Intensitet: <span id="demo"></span> %</p>
+                </div>
             </div>
 
             <div class="form-group">
@@ -134,6 +140,14 @@
         const loadingElement = document.getElementById('loading');
         const imageGrid = document.getElementById('imageGrid');
 
+
+        var slider = document.getElementById("myRange");
+        var output = document.getElementById("demo");
+        output.innerHTML = slider.value;
+        slider.oninput = function() {
+            output.innerHTML = this.value;
+        }
+
         // Show the original image after it's uploaded
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -157,6 +171,8 @@
                 return;
             }
 
+            var sliderValue = slider.value
+
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
             formData.append('size', document.getElementById('size').value);
@@ -164,6 +180,7 @@
             formData.append('masker', document.getElementById('masker').value);
             formData.append('alternating_iteration', document.getElementById('alternating_iteration').value);
             formData.append('bottom_to_top', document.getElementById('bottom_to_top').value);
+            formData.append('intensity', sliderValue);
             
             try {
                 errorElement.textContent = '';

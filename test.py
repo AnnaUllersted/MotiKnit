@@ -99,9 +99,10 @@ class TestStringMethods(unittest.TestCase):
 
         # Parameters
         width, height = 5, 4  # Dimensions for resizing
+        intensity = 50
 
         # Process the image
-        bw_image, bw_image_for_display = process_to_bw_pixels(image, width, height)
+        bw_image, bw_image_for_display = process_to_bw_pixels(image, width, height, intensity)
 
         bw_image.show()
         bw_image_for_display.show()

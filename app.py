@@ -30,8 +30,11 @@ def calculate_pixels(desired_height_cm, image, pinde, masker):
     target_height_px = int((pinde * desired_height_cm) / 10)
     return target_width_px, target_height_px
 
-def process_to_bw_pixels(image, target_width_px, target_height_px):
+def process_to_bw_pixels(image, target_width_px, target_height_px, intensity):
     """Convert image to black and white pixels of specified size"""
+
+    # remap the intensity variable
+    intensity_remap = intensity * 255/100
 
     # Resize image
     resized = image.resize((target_width_px, target_height_px), Image.Resampling.LANCZOS)
@@ -40,7 +43,7 @@ def process_to_bw_pixels(image, target_width_px, target_height_px):
     grayscale: Image = resized.convert('L')
 
     # Convert to pure black and white (threshold at 128)
-    bw_image = grayscale.point(lambda x: 0 if x < 130 else 255, '1')
+    bw_image = grayscale.point(lambda x: 0 if x < intensity_remap else 255, '1')
 
     return bw_image
 
@@ -164,8 +167,9 @@ def process():
         masker = float(request.form.get('masker', 18))      # Default 18 rows/10cm
         alternating_iteration = bool(request.form.get('alternating_iteration', False, type=is_it_true))  # Default er at der strikkes rundt på rundpind
         bottom_to_top = bool(request.form.get('bottom_to_top', False, type=is_it_true))  # Default er at der startes fra toppen
+        intensity = float(request.form.get('intensity', 50)) # default er 50% på intensiteten af motivets farve
     except ValueError:
-        return jsonify({'error': 'Invalid numeric values'}), 400
+        return jsonify({'error': 'Invalid numeric values_test'}), 400
     
     if file and allowed_file(file.filename):
         # Open the image
@@ -180,7 +184,8 @@ def process():
         logger.info("processing to black and white")
         logger.info(target_height_px)
         logger.info(target_width_px)
-        bw_image = process_to_bw_pixels(image, target_width_px, target_height_px)
+        logger.info(intensity)
+        bw_image = process_to_bw_pixels(image, target_width_px, target_height_px, intensity)
 
         # Generate knitting instructions
         logger.info("generating knitting instructions")
