@@ -215,6 +215,6 @@ if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
     logger.info('Started')
-    app.run(host=host, port=port, debug=True)
+    app.run(host=host, port=port, debug=False)
     app.logger.addHandler(logging.StreamHandler(sys.stdout))
     app.logger.setLevel(logging.ERROR)
