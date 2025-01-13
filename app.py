@@ -18,6 +18,10 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+def get_language_from_domain():
+    host = request.host
+    return 'da' if 'motiknit.dk' in host else 'en'
+
 def calculate_pixels(desired_height_cm, image, pinde, masker):
     """Calculate the number of pixels needed based on the desired size and knitting gauge"""
     # Get the original dimensions
@@ -147,10 +151,12 @@ def generate_illustration(target_width_px, target_height_px, bw_image):
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    language = get_language_from_domain()
+    return render_template('index.html', lang=language)
 
 @app.route('/process', methods=['POST'])
 def process():
+    language = get_language_from_domain()
     logging.info("Processing request")
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400

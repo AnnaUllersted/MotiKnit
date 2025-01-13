@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <title>Strikke mønster generator</title>
+    <script src="{{ url_for('static', filename='js/translations.js') }}"></script>
+    <title data-translate="title">Strikke mønster generator</title>
     <style>
     </style>
 </head>
@@ -14,15 +15,22 @@
         <h1 class="title">MotiKnit</h1>
         <img src="/static/Yarn.jpg" alt="Logo" class="header-image">
     </div>
+    <div class="language-switcher">
+        <a href="http://www.motiknit.dk" class="flag-link">
+            <img src="/static/danish.png" alt="Danish" class="flag-icon">
+        </a>
+        <a href="http://www.motiknit.com" class="flag-link">
+            <img src="/static/english.png" alt="English" class="flag-icon">
+        </a>
+    </div>
     <div class="upload-container">
         <form id="uploadForm" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="fileInput">Upload billede af dit ønskede motiv:</label>
+                <label for="fileInput" data-translate="uploadLabel">Upload billede af dit ønskede motiv:</label>
                 <div class="mobile-input-container">
                     <input type="file" id="fileInput" accept=".jpg,.jpeg">
-                    <!-- <button type="submit">Generer gratis mønster og opskrift</button> -->
                 </div>
-                <div class="help-text">Brug et .jpg eller .jpeg billede. Eller vælg et af disse motiver.</div>
+                <div class="help-text" data-translate="fileHelp">Brug et .jpg eller .jpeg billede. Eller vælg et af disse motiver.</div>
             </div>
             
             <div class="preset-images">
@@ -34,57 +42,55 @@
                     <img src="/static/preset5.jpg" class="preset-image" alt="Preset 5" onclick="selectPresetImage(this)">
                     <img src="/static/preset6.jpg" class="preset-image" alt="Preset 6" onclick="selectPresetImage(this)">
                 </div>
-                <div class="help-text" style="text-align: left;"></div>
+                <div class="help-text"></div>
             </div>
             <div class="parameters-container">
                 <div class="form-group">
-                    <label for="size">Ønsket højde (cm):</label>
+                    <label for="size" data-translate="heightLabel">Ønsket højde (cm):</label>
                     <input type="number" id="size" name="size" step="0.1" value="15">
-                    <div class="help-text">Fortæl hvilken højde motivet skal have på dit strikketøj</div>
+                    <div class="help-text" data-translate="heightHelp">Fortæl hvilken højde motivet skal have på dit strikketøj</div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="masker">Strikkefasthed, masker:</label>
+                    <label for="masker" data-translate="stitchLabel">Strikkefasthed, masker:</label>
                     <input type="number" id="masker" name="masker" step="1" value="18">
-                    <div class="help-text">Angiv antal masker på 10 cm</div>
+                    <div class="help-text" data-translate="stitchHelp">Angiv antal masker på 10 cm</div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="pinde">Strikkefasthed, pinde:</label>
+                    <label for="pinde" data-translate="rowLabel">Strikkefasthed, pinde:</label>
                     <input type="number" id="pinde" name="pinde" step="1" value="24">
-                    <div class="help-text">Angiv antal pinde på 10 cm</div>
+                    <div class="help-text" data-translate="rowHelp">Angiv antal pinde på 10 cm</div>
                 </div>
             </div>
             <div class="methods-container">
                 <div class="form-group">
-                    <label for="alternating_iteration">Strikkemetode:</label>
+                    <label for="alternating_iteration" data-translate="methodLabel">Strikkemetode:</label>
                     <select id="alternating_iteration" name="alternating_iteration">
-                        <option value=false>Der strikkes på rundpind</option>
-                        <option value=true>Der strikkes frem og tilbage</option>
+                        <option value=false data-translate="circularNeedles">Der strikkes på rundpind</option>
+                        <option value=true data-translate="backAndForth">Der strikkes frem og tilbage</option>
                     </select>
-                    <!-- <div class="help-text">Vælg mellem de to muligheder</div> -->
                 </div>
                 
                 <div class="form-group">
-                    <label for="bottom_to_top">Arbejdets begyndelse:</label>
+                    <label for="bottom_to_top" data-translate="startLabel">Arbejdets begyndelse:</label>
                     <select id="bottom_to_top" name="bottom_to_top">
-                        <option value=false>Der strikkes oppefra og ned</option>
-                        <option value=true>Der strikkes nedefra og op</option>
+                        <option value=false data-translate="topDown">Der strikkes oppefra og ned</option>
+                        <option value=true data-translate="bottomUp">Der strikkes nedefra og op</option>
                     </select>
-                    <!-- <div class="help-text">Vælg mellem de to muligheder</div> -->
                 </div>
 
                 <div class="form-group">
-                    <label for="intensity">Intensitet af motivets farve:</label>
+                    <label for="intensity" data-translate="intensityLabel">Intensitet af motivets farve:</label>
                     <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-                    <p>Intensitet: <span id="demo"></span> %</p>
+                    <p><span data-translate="intensity">Intensitet</span>: <span id="demo"></span> %</p>
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="center-button-container">
                     <div class="ButtonToGenerate">
-                        <button type="submit">Generer gratis mønster og opskrift</button>
+                        <button type="submit" data-translate="generateButton">Generer gratis mønster og opskrift</button>
                     </div>
                 </div>
             </div>
@@ -93,40 +99,39 @@
     </div>
 
     <!-- Loading Spinner will be shown only when waiting for the backend response -->
-    <div id="loading" class="loading" style="display: none;">
+    <div id="loading" class="loading" style="display: none;" data-translate="loading">
         Genererer din strikkeopskrift... Vent...
     </div>
 
     <!-- Images will be shown after uploading and generating -->
     <div class="image-grid" id="imageGrid" style="display: none;">
         <div class="image-container">
-            <h3>Billede:</h3>
+            <h3 data-translate="imageLabel">Billede:</h3>
             <img id="originalImage" class="preview-image" alt="Original image" style="display: none;">
         </div>
         <div class="image-container">
-            <h3>Strikket motiv:</h3>
+            <h3 data-translate="patternLabel">Strikket motiv:</h3>
             <img id="processedImage" class="preview-image" alt="Pattern preview" style="display: none;">
         </div>
     </div>
 
     <div id="result" class="result-container" style="display: none;">
         <div id="parameters" class="parameters">
-            <h2>Strikkeopskrift</h2>
-            <h3>Detaljer:</h3>
-            <p>Endelig størrelse: <span id="finalSize"></span> x <span id="finalSize2"></span> cm</p>
-            <p>Strikkefasthed: <span id="usedPinde"></span> pinde × <span id="usedMasker"></span> masker per 10cm</p>
-            <p>Endeligt størrelse af mønster: <span id="finalWidth"></span> masker × <span id="finalHeight"></span> pinde</p>
+            <h2 data-translate="patternTitle">Strikkeopskrift</h2>
+            <h3 data-translate="detailsTitle">Detaljer:</h3>
+            <p data-translate="finalSize">Endelig størrelse</p>: <span id="finalSize"></span> x <span id="finalSize2"></span> cm
+            <p data-translate="gauge">Strikkefasthed</p>: <span id="usedPinde"></span> <span data-translate="rows">pinde</span> × <span id="usedMasker"></span> <span data-translate="stitches">masker per 10cm</span>
+            <p data-translate="finalPattern">Endeligt størrelse af mønster</p>: <span id="finalWidth"></span> masker × <span id="finalHeight"></span> pinde
         </div>
 
-        <h3>Instruktioner:</h3>
+        <h3 data-translate="instructions">Instruktioner:</h3>
         <div id="instructions" class="instructions"></div>
         <div class="download-container" id="downloadContainer" style="display: none;">
-            <button id="downloadPdfButton" class="download-button">Download PDF</button>
+            <button id="downloadPdfButton" class="download-button" data-translate="downloadPDF">Download PDF</button>
         </div>
     </div>
 
     <p id="error" class="error"></p>
-
     <script>
         let currentProcessedImage = null;
         let currentParameters = null;
@@ -325,7 +330,8 @@
         }
     });
 
-
+    const currentLang = window.location.hostname.includes('motiknit.dk') ? 'da' : 'en';
+    updatePageContent(currentLang);
     </script>
 </body>
 </html>
