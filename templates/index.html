@@ -139,13 +139,67 @@
         const errorElement = document.getElementById('error');
         const loadingElement = document.getElementById('loading');
         const imageGrid = document.getElementById('imageGrid');
-
+        const uploadForm = document.getElementById('uploadForm');
 
         var slider = document.getElementById("myRange");
         var output = document.getElementById("demo");
         output.innerHTML = slider.value;
         slider.oninput = function() {
             output.innerHTML = this.value;
+        }
+
+        // Add mouseup event to trigger form submission when slider is released
+        slider.addEventListener('mouseup', function() {
+            if (fileInput.files.length > 0) {
+                uploadForm.requestSubmit();
+            }
+        });
+
+        // Touch support for mobile devices
+        slider.addEventListener('touchend', function() {
+            if (fileInput.files.length > 0) {
+                uploadForm.requestSubmit();
+            }
+        });
+
+        // Preset image settings
+        const presetSettings = {
+            'preset1.jpg': 50,  
+            'preset2.jpg': 80,
+            'preset3.jpg': 90,
+            'preset4.jpg': 75,
+            'preset5.jpg': 40,
+            'preset6.jpg': 85
+        };
+
+                // Modified selectPresetImage function
+        async function selectPresetImage(imgElement) {
+            try {
+                const response = await fetch(imgElement.src);
+                const blob = await response.blob();
+                const file = new File([blob], 'preset.jpg', { type: 'image/jpeg' });
+                
+                // Create a new FileList-like object
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                
+                // Update the file input
+                fileInput.files = dataTransfer.files;
+                
+                // Show the selected image in the preview
+                originalImage.src = imgElement.src;
+                originalImage.style.display = 'block';
+                imageGrid.style.display = 'flex';
+
+                // Set slider value based on preset image
+                const imageName = imgElement.src.split('/').pop();
+                if (presetSettings[imageName]) {
+                    slider.value = presetSettings[imageName];
+                    output.innerHTML = slider.value;
+                }
+            } catch (error) {
+                errorElement.textContent = 'Error loading preset image';
+            }
         }
 
         // Show the original image after it's uploaded
@@ -231,28 +285,6 @@
                 loadingElement.style.display = 'none'; // Hide loading
             }
         });
-
-        async function selectPresetImage(imgElement) {
-            try {
-                const response = await fetch(imgElement.src);
-                const blob = await response.blob();
-                const file = new File([blob], 'preset.jpg', { type: 'image/jpeg' });
-                
-                // Create a new FileList-like object
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-                
-                // Update the file input
-                fileInput.files = dataTransfer.files;
-                
-                // Show the selected image in the preview
-                originalImage.src = imgElement.src;
-                originalImage.style.display = 'block';
-                imageGrid.style.display = 'flex';
-            } catch (error) {
-                errorElement.textContent = 'Error loading preset image';
-            }
-        }
 
         document.getElementById('downloadPdfButton').addEventListener('click', async () => {
         try {
