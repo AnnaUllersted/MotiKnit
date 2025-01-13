@@ -169,7 +169,7 @@ def process():
         bottom_to_top = bool(request.form.get('bottom_to_top', False, type=is_it_true))  # Default er at der startes fra toppen
         intensity = float(request.form.get('intensity', 50)) # default er 50% på intensiteten af motivets farve
     except ValueError:
-        return jsonify({'error': 'Invalid numeric values_test'}), 400
+        return jsonify({'error': 'Invalid numeric values'}), 400
     
     if file and allowed_file(file.filename):
         # Open the image
@@ -182,9 +182,6 @@ def process():
 
         # Process image to black and white pixels
         logger.info("processing to black and white")
-        logger.info(target_height_px)
-        logger.info(target_width_px)
-        logger.info(intensity)
         bw_image = process_to_bw_pixels(image, target_width_px, target_height_px, intensity)
 
         # Generate knitting instructions
