@@ -6,6 +6,8 @@ import numpy as np
 from pdf_generator import create_pattern_pdf
 from PIL import Image, ImageDraw, ImageFont
 import logging
+from knitting_patter_generator import KnittingPatternGenerator
+from pattern_visualizer import KnittingPatternVisualizer
 import sys
 from pathlib import Path
 from dotenv import load_dotenv
@@ -21,135 +23,6 @@ ALLOWED_EXTENSIONS = {'jpg', 'jpeg'}
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-def calculate_pixels(desired_height_cm, image, pinde, masker):
-    """Calculate the number of pixels needed based on the desired size and knitting gauge"""
-    # Get the original dimensions
-    original_width, original_height = image.size
-    # Calculate aspect ratio
-    aspect_ratio = original_width / original_height
-    # Calculate pixels needed for desired size
-    desired_width_cm = desired_height_cm * aspect_ratio
-    target_width_px = int((masker * desired_width_cm) / 10)
-    target_height_px = int((pinde * desired_height_cm) / 10)
-    return target_width_px, target_height_px
-
-def process_to_bw_pixels(image, target_width_px, target_height_px, intensity):
-    """Convert image to black and white pixels of specified size"""
-
-    # remap the intensity variable
-    intensity_remap = intensity * 255/100
-
-    # Resize image
-    resized = image.resize((target_width_px, target_height_px), Image.Resampling.LANCZOS)
-
-    # Convert to grayscale
-    grayscale: Image = resized.convert('L')
-
-    # Convert to pure black and white (threshold at 128)
-    bw_image = grayscale.point(lambda x: 0 if x < intensity_remap else 255, '1')
-
-    return bw_image
-
-def generate_row_instructions(row_data, ret_pind, row_number):
-    current_color = row_data[0]  # Start with the first pixel's color
-    count = 1
-    row_instructions = []
-    if ret_pind:
-        row_instructions.append(f"Pind {row_number +1} er en retpind")
-    else:
-        row_instructions.append(f"Pind {row_number +1} er en vrangpind")
-    # Process each pixel in the row
-    for col in range(1, len(row_data)):
-        if row_data[col] == current_color:
-            count += 1
-        else:
-            row_instructions.append(f" {count} {'hvide masker' if current_color == 1 else 'sorte masker'}")
-            current_color = row_data[col]
-            count = 1
-    row_instructions.append(f" {count} {'hvide masker' if current_color == 1 else 'sorte masker'}")
-    return row_instructions
-
-def generate_knitting_instructions(bw_image, bottom_to_top, alternating_iteration):
-    """Generate knitting instructions reading from bottom up, left to right"""
-    width, height = bw_image.size
-    pixels = np.array(bw_image)
-    instructions = []
-
-    if bottom_to_top:
-        for i,row in enumerate(reversed(pixels)):
-            right_to_left = True
-            if alternating_iteration: 
-                right_to_left = i % 2 == 0
-                if right_to_left: #even row number
-                    row_data = row[::-1] #reversed array
-                else: 
-                    row_data = row
-            else: #start lower right corner
-                row_data = row[::-1] #reversed array
-            instructions.append(generate_row_instructions(row_data,right_to_left, i))
-    else: #top to bottom
-        for i,row in enumerate(pixels):
-            left_to_right = True
-            if alternating_iteration:
-                left_to_right = i % 2 == 0
-                if left_to_right: #even row number
-                    row_data = row
-                else: 
-                    row_data = row[::-1] #reversed array
-            else: #start upper left corner
-                row_data = row
-            row_instructions = generate_row_instructions(row_data, left_to_right, i)
-            instructions.append(row_instructions)
-    return instructions
-
-def generate_illustration(target_width_px, target_height_px, bw_image):
-    """Generate knitting illustration with grey area and row numbers """
-    # Save processed image to base64 for display
-    img_buffer = BytesIO()
-
-    pixel_size = 20  # Justér for tykkelse af grå kant
-
-    # resize image so it fits a boundary
-    width_w_boundary = target_width_px*pixel_size
-    height_w_boundary = target_height_px*pixel_size
-
-    logger.info("creating canvas with background and boarder")
-    # Opret et nyt billede med ekstra plads til tekst og grå kanter
-    text_space_width = 60  # Bredden på pladsen til teksten
-    canvas = Image.new('RGB', (width_w_boundary + text_space_width, height_w_boundary), (120, 120, 120))  # Grå baggrund
-
-    logger.info("draw new image based on old")
-    # Tegn det originale billede på det nye lærred med grå kanter
-    for y in range(target_height_px):
-        for x in range(target_width_px):
-            pixel_color = bw_image.getpixel((x, y))  # 0 eller 255
-            color = (0, 0, 0) if pixel_color == 0 else (255, 255, 255)  # Sort eller hvid
-            pixel_x = text_space_width + x * pixel_size
-            pixel_y = y * pixel_size
-            # Fyld midten af det grå område med den originale pixels farve
-            for i in range(1, pixel_size - 1):  # Undgå de yderste pixels (grå kant)
-                for j in range(1, pixel_size - 1):
-                    canvas.putpixel((pixel_x + i, pixel_y + j), color)
-
-    logger.info("writing text on image")
-    # Tilføj tekst ud for hver række
-    draw = ImageDraw.Draw(canvas)
-    font = ImageFont.truetype("arial.ttf", size=14)  # Brug en passende skrifttype og størrelse
-    for y in range(target_height_px):
-        text = f"Pind {y + 1}"
-        text_position = (10, y * pixel_size + pixel_size // 4)  # Placer teksten midt på pixel-rækken
-        draw.text(text_position, text, font=font, fill=(0, 0, 0))  # Hvid tekst
-
-    bw_image_for_display = canvas
-    logger.info("resizing image")
-    bw_image_for_display = bw_image_for_display.resize((target_width_px*pixel_size+text_space_width, target_height_px*pixel_size), Image.Resampling.NEAREST)  # Scale up for better visibility
-    bw_image_for_display.save(img_buffer, format='PNG')
-    img_buffer.seek(0)
-    img_str = base64.b64encode(img_buffer.getvalue()).decode()
-    return img_str
-
 
 @app.route('/')
 def home():
@@ -179,23 +52,25 @@ def process():
     
     if file and allowed_file(file.filename):
         # Open the image
-        logger.info("opening file")
         image = Image.open(file)
+
+        pattern_generator = KnittingPatternGenerator(
+            image,
+            desired_height_cm,
+            pinde,
+            masker,
+            bottom_to_top,
+            alternating_iteration)
         
-        # Calculate required pixels
-        logger.info("calculating pixels")
-        target_width_px, target_height_px = calculate_pixels(desired_height_cm, image, pinde, masker)
+        bw_image = pattern_generator.process_to_bw_pixels(intensity)
+        instructions = pattern_generator.generate_knitting_instructions(bw_image)
 
-        # Process image to black and white pixels
-        logger.info("processing to black and white")
-        bw_image = process_to_bw_pixels(image, target_width_px, target_height_px, intensity)
-
-        # Generate knitting instructions
-        logger.info("generating knitting instructions")
-        instructions = generate_knitting_instructions(bw_image,bottom_to_top,alternating_iteration)
-
+        pattern_visualizer = KnittingPatternVisualizer(
+            pattern_generator.width_px, 
+            pattern_generator.height_px)
         # Generate illustration
-        img_str = generate_illustration(target_width_px, target_height_px, bw_image)
+        pattern_image = pattern_visualizer.generate_illustration(bw_image)
+        img_str = base64.b64encode(pattern_image).decode()
 
         return jsonify({
             'message': 'Pattern generated successfully',
@@ -205,8 +80,8 @@ def process():
                 'size': desired_height_cm,
                 'pinde': pinde,
                 'masker': masker,
-                'final_width': target_width_px,
-                'final_height': target_height_px
+                'final_width': pattern_generator.width_px,
+                'final_height': pattern_generator.height_px
             }
         })
             
