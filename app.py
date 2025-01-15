@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify, send_file, make_response
+from flask import Flask, request, render_template, jsonify, make_response,redirect
 import os
 import base64
 from io import BytesIO
@@ -7,7 +7,12 @@ from pdf_generator import create_pattern_pdf
 from PIL import Image, ImageDraw, ImageFont
 import logging
 import sys
+from pathlib import Path
+from dotenv import load_dotenv
 
+load_dotenv()
+ENVIRONMENT = os.environ.get('FLASK_ENV', 'production')
+print(ENVIRONMENT)
 app = Flask(__name__)
 logger = logging.getLogger(__name__)
 
@@ -144,6 +149,14 @@ def generate_illustration(target_width_px, target_height_px, bw_image):
     img_buffer.seek(0)
     img_str = base64.b64encode(img_buffer.getvalue()).decode()
     return img_str
+
+
+
+@app.before_request
+def before_request():
+    if not request.is_secure and ENVIRONMENT == 'production':
+        url = request.url.replace("http://", "https://", 1)
+        return redirect(url, code=301)
 
 @app.route('/')
 def home():
