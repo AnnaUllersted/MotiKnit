@@ -151,13 +151,6 @@ def generate_illustration(target_width_px, target_height_px, bw_image):
     return img_str
 
 
-
-@app.before_request
-def before_request():
-    if not request.is_secure and ENVIRONMENT == 'production':
-        url = request.url.replace("http://", "https://", 1)
-        return redirect(url, code=301)
-
 @app.route('/')
 def home():
     return render_template('index.html')
