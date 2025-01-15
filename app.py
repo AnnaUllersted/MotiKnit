@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify, make_response
+from flask import Flask, request, render_template, jsonify, send_file, make_response
 import os
 import base64
 from io import BytesIO
@@ -6,9 +6,16 @@ import numpy as np
 from pdf_generator import create_pattern_pdf
 from PIL import Image, ImageDraw, ImageFont
 import logging
+from knitting_patter_generator import KnittingPatternGenerator
+from pattern_visualizer import KnittingPatternVisualizer
 import sys
+from pathlib import Path
+from dotenv import load_dotenv
 from translator import translate
 
+load_dotenv()
+ENVIRONMENT = os.environ.get('FLASK_ENV', 'production')
+print(ENVIRONMENT)
 app = Flask(__name__)
 logger = logging.getLogger(__name__)
 
@@ -183,23 +190,25 @@ def process():
     if file and allowed_file(file.filename):
         try:    
         # Open the image
-            logger.info("opening file")
-            image = Image.open(file)
-            
-            # Calculate required pixels
-            logger.info("calculating pixels")
-            target_width_px, target_height_px = calculate_pixels(desired_height_cm, image, pinde, masker)
+        image = Image.open(file)
 
-            # Process image to black and white pixels
-            logger.info("processing to black and white")
-            bw_image = process_to_bw_pixels(image, target_width_px, target_height_px, intensity)
+        pattern_generator = KnittingPatternGenerator(
+            image,
+            desired_height_cm,
+            pinde,
+            masker,
+            bottom_to_top,
+            alternating_iteration)
+        
+        bw_image = pattern_generator.process_to_bw_pixels(intensity)
+        instructions = pattern_generator.generate_knitting_instructions(bw_image)
 
-            # Generate knitting instructions
-            logger.info("generating knitting instructions")
-            instructions = generate_knitting_instructions(bw_image,bottom_to_top,alternating_iteration,color1,color2,language)
-
-            # Generate illustration
-            img_str = generate_illustration(target_width_px, target_height_px, bw_image, language)
+        pattern_visualizer = KnittingPatternVisualizer(
+            pattern_generator.width_px, 
+            pattern_generator.height_px)
+        # Generate illustration
+        pattern_image = pattern_visualizer.generate_illustration(bw_image)
+        img_str = base64.b64encode(pattern_image).decode()
 
             size_str = translate('final_size', language, size=desired_height_cm)
             gauge_str = translate('knit_gauge', language, pinde=pinde, masker=masker)
@@ -212,8 +221,8 @@ def process():
                     'size': desired_height_cm,
                     'pinde': pinde,
                     'masker': masker,
-                    'final_width':target_width_px,
-                    'final_height': target_height_px,
+                    'final_width':pattern_generator.width_px,
+                    'final_height': pattern_generator.height_px,
                     'final_size': size_str,
                     'final_gauge': gauge_str,
                     'final_pattern_size': gauge_str
