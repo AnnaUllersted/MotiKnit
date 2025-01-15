@@ -119,9 +119,9 @@
         <div id="parameters" class="parameters">
             <h2 data-translate="patternTitle">Strikkeopskrift</h2>
             <h3 data-translate="detailsTitle">Detaljer:</h3>
-            <p data-translate="finalSize">Endelig størrelse</p>: <span id="finalSize"></span> x <span id="finalSize2"></span> cm
-            <p data-translate="gauge">Strikkefasthed</p>: <span id="usedPinde"></span> <span data-translate="rows">pinde</span> × <span id="usedMasker"></span> <span data-translate="stitches">masker per 10cm</span>
-            <p data-translate="finalPattern">Endeligt størrelse af mønster</p>: <span id="finalWidth"></span> masker × <span id="finalHeight"></span> pinde
+            <p id="finalSizeValue"></p>
+            <p id="finalGaugeValue"></p>
+            <p id="finalPatternSizeValue"></p>
         </div>
 
         <h3 data-translate="instructions">Instruktioner:</h3>
@@ -269,12 +269,9 @@
                 };
 
                     // Display parameters
-                    document.getElementById('finalSize').textContent = data.parameters.size;
-                    document.getElementById('finalSize2').textContent = data.parameters.size;
-                    document.getElementById('usedPinde').textContent = data.parameters.pinde;
-                    document.getElementById('usedMasker').textContent = data.parameters.masker;
-                    document.getElementById('finalWidth').textContent = data.parameters.final_width;
-                    document.getElementById('finalHeight').textContent = data.parameters.final_height;
+                    document.getElementById('finalSizeValue').textContent = data.parameters.final_size;
+                    document.getElementById('finalGaugeValue').textContent = data.parameters.final_gauge;
+                    document.getElementById('finalPatternSizeValue').textContent = data.parameters.final_pattern_size;
                     
                     // Display instructions
                     instructionsElement.textContent = data.instructions.join('\n');
@@ -329,8 +326,10 @@
             downloadButton.disabled = false;
         }
     });
-
-    const currentLang = window.location.hostname.includes('motiknit.dk') ? 'da' : 'en';
+    var currentLang = Intl.DateTimeFormat().resolvedOptions().locale
+    if (!['da','en'].includes(currentLang)){
+        currentLang = window.location.hostname.includes('motiknit.dk') ? 'da' : 'en'
+    }
     updatePageContent(currentLang);
     </script>
 </body>

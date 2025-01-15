@@ -7,6 +7,7 @@ from pdf_generator import create_pattern_pdf
 from PIL import Image, ImageDraw, ImageFont
 import logging
 import sys
+from translator import translate
 
 app = Flask(__name__)
 logger = logging.getLogger(__name__)
@@ -21,39 +22,6 @@ def allowed_file(filename):
 def get_language_from_domain():
     host = request.host
     return 'da' if 'motiknit.dk' in host else 'en'
-
-# Translations
-i18n = {
-    'en': {
-        'no_file': 'No file part',
-        'no_selection': 'No selected file',
-        'invalid_values': 'Invalid numeric values',
-        'file_not_allowed': 'File type not allowed',
-        'pattern_generated': 'Pattern generated successfully',
-        'row_instructions': 'Row {row}: {details}',
-        'ret_pind': 'Row {row} is a knit row',
-        'vrang_pind': 'Row {row} is a purl row',
-        'masker_details': '{count} {color} stitches',
-        'error_message': 'An error occurred: {error}',
-        'pinde_index': 'Row {index}'
-    },
-    'da': {
-        'no_file': 'Ingen fil fundet',
-        'no_selection': 'Ingen fil valgt',
-        'invalid_values': 'Ugyldige numeriske værdier',
-        'file_not_allowed': 'Filtype ikke tilladt',
-        'pattern_generated': 'Mønster genereret med succes',
-        'row_instructions': 'Pind {row}: {details}',
-        'ret_pind': 'Pind {row} er en retpind',
-        'vrang_pind': 'Pind {row} er en vrangpind',
-        'masker_details': '{count} {color} masker',
-        'error_message': 'Der opstod en fejl: {error}',
-        'pinde_index': 'Pind {index}'
-    }
-}
-
-def translate(key, lang, **kwargs):
-    return i18n[lang][key].format(**kwargs)
 
 def calculate_pixels(desired_height_cm, image, pinde, masker):
     """Calculate the number of pixels needed based on the desired size and knitting gauge"""
@@ -84,7 +52,7 @@ def process_to_bw_pixels(image, target_width_px, target_height_px, intensity):
 
     return bw_image
 
-def generate_row_instructions(row_data, ret_pind, row_number, lang):
+def generate_row_instructions(row_data, ret_pind, row_number, color1, color2, lang):
     current_color = row_data[0]  # Start with the first pixel's color
     count = 1
     row_instructions = []
@@ -95,15 +63,15 @@ def generate_row_instructions(row_data, ret_pind, row_number, lang):
         if row_data[col] == current_color:
             count += 1
         else:
-            color = 'hvide' if current_color == 1 else 'sorte'
+            color = translate(color1,lang) if current_color == 1 else translate(color2,lang)
             row_instructions.append(translate('masker_details', lang, count=count, color=color))
             current_color = row_data[col]
             count = 1
-    color = 'hvide' if current_color == 1 else 'sorte'
+    color = translate(color1,lang) if current_color == 1 else translate(color2,lang)
     row_instructions.append(translate('masker_details', lang, count=count, color=color))
     return row_instructions
 
-def generate_knitting_instructions(bw_image, bottom_to_top, alternating_iteration, lang):
+def generate_knitting_instructions(bw_image, bottom_to_top, alternating_iteration, color1, color2, lang):
     """Generate knitting instructions reading from bottom up, left to right"""
     width, height = bw_image.size
     pixels = np.array(bw_image)
@@ -120,7 +88,7 @@ def generate_knitting_instructions(bw_image, bottom_to_top, alternating_iteratio
                     row_data = row
             else: #start lower right corner
                 row_data = row[::-1] #reversed array
-            instructions.append(generate_row_instructions(row_data,right_to_left, i, lang))
+            instructions.append(generate_row_instructions(row_data, left_to_right, i, color1, color2, lang))
     else: #top to bottom
         for i,row in enumerate(pixels):
             left_to_right = True
@@ -132,7 +100,7 @@ def generate_knitting_instructions(bw_image, bottom_to_top, alternating_iteratio
                     row_data = row[::-1] #reversed array
             else: #start upper left corner
                 row_data = row
-            row_instructions = generate_row_instructions(row_data, left_to_right, i, lang)
+            row_instructions = generate_row_instructions(row_data, left_to_right, i, color1, color2, lang)
             instructions.append(row_instructions)
     return instructions
 
@@ -189,6 +157,8 @@ def home():
 
 @app.route('/process', methods=['POST'])
 def process():
+    color1 = "white"
+    color2 = "black"
     language = get_language_from_domain()
     logging.info("Processing request")
     if 'file' not in request.files:
@@ -226,23 +196,25 @@ def process():
 
             # Generate knitting instructions
             logger.info("generating knitting instructions")
-            instructions = generate_knitting_instructions(bw_image,bottom_to_top,alternating_iteration,language)
+            instructions = generate_knitting_instructions(bw_image,bottom_to_top,alternating_iteration,color1,color2,language)
 
             # Generate illustration
             img_str = generate_illustration(target_width_px, target_height_px, bw_image, language)
 
-            return jsonify({
+            size_str = translate('final_size', language, size=desired_height_cm)
+            gauge_str = translate('knit_gauge', language, pinde=pinde, masker=masker)
+            pattern_size_str = translate('pattern_size', language, final_width=target_width_px, final_height=target_height_px)
+            response =  jsonify({
                 'message': 'Pattern generated successfully',
                 'processed_image': img_str,
                 'instructions': instructions,
                 'parameters': {
-                    'size': desired_height_cm,
-                    'pinde': pinde,
-                    'masker': masker,
-                    'final_width': target_width_px,
-                    'final_height': target_height_px
+                    'final_size': size_str,
+                    'final_gauge': gauge_str,
+                    'final_pattern_size': pattern_size_str
                 }
             })
+            return response
         except Exception as e:
             logger.error(str(e))
             return jsonify({'error': translate('error_message', language, error=str(e))}), 500

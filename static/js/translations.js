@@ -23,11 +23,8 @@ const translations = {
         'patternLabel': 'Knitted pattern:',
         'patternTitle': 'Knitting Pattern',
         'detailsTitle': 'Details:',
-        'finalSize': 'Final size',
-        'gauge': 'Gauge',
         'rows': 'rows',
         'stitches': 'stitches per 10cm',
-        'finalPattern': 'Final pattern size',
         'instructions': 'Instructions:',
         'downloadPDF': 'Download PDF',
         'generatingPDF': 'Generating PDF...'
@@ -56,11 +53,8 @@ const translations = {
         'patternLabel': 'Strikket motiv:',
         'patternTitle': 'Strikkeopskrift',
         'detailsTitle': 'Detaljer:',
-        'finalSize': 'Endelig størrelse',
-        'gauge': 'Strikkefasthed',
         'rows': 'pinde',
         'stitches': 'masker per 10cm',
-        'finalPattern': 'Endeligt størrelse af mønster',
         'instructions': 'Instruktioner:',
         'downloadPDF': 'Download PDF',
         'generatingPDF': 'Genererer PDF...'
