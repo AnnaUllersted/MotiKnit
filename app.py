@@ -209,9 +209,14 @@ def process():
                 'processed_image': img_str,
                 'instructions': instructions,
                 'parameters': {
+                    'size': desired_height_cm,
+                    'pinde': pinde,
+                    'masker': masker,
+                    'final_width':target_width_px,
+                    'final_height': target_height_px,
                     'final_size': size_str,
                     'final_gauge': gauge_str,
-                    'final_pattern_size': pattern_size_str
+                    'final_pattern_size': gauge_str
                 }
             })
             return response
