@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify, send_file, make_response
+from flask import Flask, request, render_template, jsonify, make_response,redirect
 import os
 import base64
 from io import BytesIO
@@ -9,7 +9,12 @@ import logging
 from knitting_patter_generator import KnittingPatternGenerator
 from pattern_visualizer import KnittingPatternVisualizer
 import sys
+from pathlib import Path
+from dotenv import load_dotenv
 
+load_dotenv()
+ENVIRONMENT = os.environ.get('FLASK_ENV', 'production')
+print(ENVIRONMENT)
 app = Flask(__name__)
 logger = logging.getLogger(__name__)
 
