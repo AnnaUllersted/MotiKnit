@@ -1,4 +1,5 @@
 from io import BytesIO
+from translator import translate
 from PIL import Image, ImageDraw, ImageFont
 
 
@@ -11,7 +12,7 @@ class KnittingPatternVisualizer:
         self.square_px_size = 20
 
 
-    def generate_illustration(self, bw_image):
+    def generate_illustration(self, bw_image, lang='en'):
         """Generate knitting illustration with grey area and row numbers """
         # Save processed image to base64 for display
         img_buffer = BytesIO()
@@ -40,7 +41,7 @@ class KnittingPatternVisualizer:
         draw = ImageDraw.Draw(canvas)
         font = ImageFont.truetype("arial.ttf", size=14)  # Brug en passende skrifttype og størrelse
         for y in range(self.height_px):
-            text = f"Pind {y + 1}"
+            text = translate('pinde_index', lang, index=y+1)
             text_position = (10, y * self.square_px_size + self.square_px_size // 4)  # Placer teksten midt på pixel-rækken
             draw.text(text_position, text, font=font, fill=(0, 0, 0))  # Hvid tekst
 

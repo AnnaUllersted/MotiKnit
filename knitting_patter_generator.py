@@ -1,6 +1,6 @@
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image
 import numpy as np
-
+from translator import translate
 
 class KnittingPatternGenerator:
     def __init__(self, image, desired_height_cm, desired_rows, desired_columns, bottom_to_top, alternating_iterations):
@@ -43,7 +43,7 @@ class KnittingPatternGenerator:
         return bw_image
 
 
-    def generate_knitting_instructions(self, bw_image):
+    def generate_knitting_instructions(self, bw_image, color1, color2, lang='en'):
         """Generate knitting instructions reading from bottom up, left to right"""
         pixels = np.array(bw_image)
         instructions = []
@@ -59,7 +59,7 @@ class KnittingPatternGenerator:
                         row_data = row
                 else: #start lower right corner
                     row_data = row[::-1] #reversed array
-                instructions.append(self.generate_row_instructions(row_data,right_to_left, i))
+                instructions.append(self.generate_row_instructions(row_data, left_to_right, i, color1, color2, lang))
         else: #top to bottom
             for i,row in enumerate(pixels):
                 left_to_right = True
@@ -71,26 +71,26 @@ class KnittingPatternGenerator:
                         row_data = row[::-1] #reversed array
                 else: #start upper left corner
                     row_data = row
-                row_instructions = self.generate_row_instructions(row_data, left_to_right, i)
+                row_instructions = self.generate_row_instructions(row_data, left_to_right, i, color1, color2, lang)
                 instructions.append(row_instructions)
         return instructions
     
-
-    def generate_row_instructions(self, row_data, ret_pind, row_number):
+    def generate_row_instructions(self, row_data, ret_pind, row_number, color1, color2, lang):
         current_color = row_data[0]  # Start with the first pixel's color
         count = 1
         row_instructions = []
-        if ret_pind:
-            row_instructions.append(f"Pind {row_number +1} er en retpind")
-        else:
-            row_instructions.append(f"Pind {row_number +1} er en vrangpind")
+        row_key = 'ret_pind' if ret_pind else 'vrang_pind'
+        row_instructions.append(translate(row_key, lang, row=row_number + 1))
         # Process each pixel in the row
         for col in range(1, len(row_data)):
             if row_data[col] == current_color:
                 count += 1
             else:
-                row_instructions.append(f" {count} {'hvide masker' if current_color == 1 else 'sorte masker'}")
+                color = translate(color1,lang) if current_color == 1 else translate(color2,lang)
+                row_instructions.append(translate('masker_details', lang, count=count, color=color))
                 current_color = row_data[col]
                 count = 1
-        row_instructions.append(f" {count} {'hvide masker' if current_color == 1 else 'sorte masker'}")
+        color = translate(color1,lang) if current_color == 1 else translate(color2,lang)
+        row_instructions.append(translate('masker_details', lang, count=count, color=color))
         return row_instructions
+

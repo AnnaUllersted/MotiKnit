@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify, make_response,redirect
+from flask import Flask, request, render_template, jsonify, send_file, make_response
 import os
 import base64
 from io import BytesIO
@@ -11,6 +11,7 @@ from pattern_visualizer import KnittingPatternVisualizer
 import sys
 from pathlib import Path
 from dotenv import load_dotenv
+from translator import translate
 
 load_dotenv()
 ENVIRONMENT = os.environ.get('FLASK_ENV', 'production')
@@ -24,20 +25,28 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def get_language_from_domain():
+    host = request.host
+    return 'da' if 'motiknit.dk' in host else 'en'
+
 @app.route('/')
 def home():
-    return render_template('index.html')
+    language = get_language_from_domain()
+    return render_template('index.html', lang=language)
 
 @app.route('/process', methods=['POST'])
 def process():
+    color1 = "white"
+    color2 = "black"
+    language = get_language_from_domain()
     logging.info("Processing request")
     if 'file' not in request.files:
-        return jsonify({'error': 'No file part'}), 400
+        return jsonify({'error': translate('no_file', language)}), 400
     
     file = request.files['file']
     
     if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
+        return jsonify({'error': translate('no_selection', language)}), 400
     
     # Get parameters from form data
     try:
@@ -48,47 +57,59 @@ def process():
         bottom_to_top = bool(request.form.get('bottom_to_top', False, type=is_it_true))  # Default er at der startes fra toppen
         intensity = float(request.form.get('intensity', 50)) # default er 50% på intensiteten af motivets farve
     except ValueError:
-        return jsonify({'error': 'Invalid numeric values'}), 400
+        return jsonify({'error': translate('invalid_values', language)}), 400
     
     if file and allowed_file(file.filename):
+        try:    
         # Open the image
-        image = Image.open(file)
+            image = Image.open(file)
 
-        pattern_generator = KnittingPatternGenerator(
-            image,
-            desired_height_cm,
-            pinde,
-            masker,
-            bottom_to_top,
-            alternating_iteration)
-        
-        bw_image = pattern_generator.process_to_bw_pixels(intensity)
-        instructions = pattern_generator.generate_knitting_instructions(bw_image)
-
-        pattern_visualizer = KnittingPatternVisualizer(
-            pattern_generator.width_px, 
-            pattern_generator.height_px)
-        # Generate illustration
-        pattern_image = pattern_visualizer.generate_illustration(bw_image)
-        img_str = base64.b64encode(pattern_image).decode()
-
-        return jsonify({
-            'message': 'Pattern generated successfully',
-            'processed_image': img_str,
-            'instructions': instructions,
-            'parameters': {
-                'size': desired_height_cm,
-                'pinde': pinde,
-                'masker': masker,
-                'final_width': pattern_generator.width_px,
-                'final_height': pattern_generator.height_px
-            }
-        })
+            pattern_generator = KnittingPatternGenerator(
+                image,
+                desired_height_cm,
+                pinde,
+                masker,
+                bottom_to_top,
+                alternating_iteration)
             
-    return jsonify({'error': 'File type not allowed'}), 400
+            bw_image = pattern_generator.process_to_bw_pixels(intensity)
+            instructions = pattern_generator.generate_knitting_instructions(bw_image, color1, color2, language)
+
+            pattern_visualizer = KnittingPatternVisualizer(
+                pattern_generator.width_px, 
+                pattern_generator.height_px)
+            # Generate illustration
+            pattern_image = pattern_visualizer.generate_illustration(bw_image, language)
+            img_str = base64.b64encode(pattern_image).decode()
+
+            size_str = translate('final_size', language, size=desired_height_cm)
+            gauge_str = translate('knit_gauge', language, pinde=pinde, masker=masker)
+            pattern_size_str = translate('pattern_size', language, final_width=pattern_generator.width_px, final_height=pattern_generator.height_px)
+            response =  jsonify({
+                'message': 'Pattern generated successfully',
+                'processed_image': img_str,
+                'instructions': instructions,
+                'parameters': {
+                    'size': desired_height_cm,
+                    'pinde': pinde,
+                    'masker': masker,
+                    'final_width':pattern_generator.width_px,
+                    'final_height': pattern_generator.height_px,
+                    'final_size': size_str,
+                    'final_gauge': gauge_str,
+                    'final_pattern_size': pattern_size_str
+                }
+            })
+            return response
+        except Exception as e:
+            logger.error(str(e))
+            return jsonify({'error': translate('error_message', language, error=str(e))}), 500
+            
+    return jsonify({'error': translate('file_not_allowed', language)}), 400
 
 @app.route('/download-pdf', methods=['POST'])
 def download_pdf():
+    language = get_language_from_domain()
     try:
         data = request.json
         pdf_buffer = create_pattern_pdf(
@@ -101,7 +122,7 @@ def download_pdf():
         response.headers['Content-Disposition'] = 'inline; filename=knitting_pattern.pdf'
         return response
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': translate('error_message', language, error=str(e))}), 500
 
 def is_it_true(value):
   return value.lower() == 'true'

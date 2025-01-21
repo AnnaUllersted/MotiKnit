@@ -395,3 +395,68 @@ button:hover {
         margin-right: 0px;
     }
 }
+
+.language-switcher {
+    position: fixed; 
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+    background-color: rgba(248, 236, 217, 0.9); /* Match body background with slight transparency */
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.flag-icon {
+    width: 24px;
+    height: 16px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    transition: transform 0.2s;
+    object-fit: cover;
+}
+
+.flag-link {
+    text-decoration: none;
+    display: inline-block;
+    line-height: 0;
+}
+
+.flag-icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+/* Add responsive styles for the language switcher */
+@media (max-width: 770px) {
+    .language-switcher {
+        bottom: 10px;
+        right: 10px;
+        padding: 8px;
+    }
+    
+    .flag-icon {
+        width: 20px;
+        height: 14px;
+    }
+}
+
+@media (max-width: 415px) {
+    .language-switcher {
+        bottom: 5px;
+        right: 5px;
+        padding: 6px;
+    }
+    
+    .flag-icon {
+        width: 18px;
+        height: 12px;
+    }
+}
+
+/* Add some bottom padding to the body to prevent the fixed language switcher from covering content */
+body {
+    padding-bottom: 60px;
+}
