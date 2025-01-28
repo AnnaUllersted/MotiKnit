@@ -59,7 +59,7 @@ class KnittingPatternGenerator:
                         row_data = row
                 else: #start lower right corner
                     row_data = row[::-1] #reversed array
-                instructions.append(self.generate_row_instructions(row_data, left_to_right, i, color1, color2, lang))
+                instructions.append(self.generate_row_instructions(row_data, right_to_left, i, color1, color2, lang))
         else: #top to bottom
             for i,row in enumerate(pixels):
                 left_to_right = True
