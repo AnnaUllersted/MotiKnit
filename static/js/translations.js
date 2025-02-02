@@ -2,7 +2,7 @@ const translations = {
     'en': {
         'title': 'Pattern Generator',
         'uploadLabel': 'Upload your desired pattern image:',
-        'fileHelp': 'Use a .jpg or .jpeg image. Or choose one of these patterns.',
+        'fileHelp': 'Use a .jpg or .jpeg image',
         'heightLabel': 'Desired height (cm):',
         'heightHelp': 'Specify the height of the pattern on your knitting',
         'stitchLabel': 'Knitting gauge, stitches:',
@@ -17,7 +17,7 @@ const translations = {
         'bottomUp': 'Knitting bottom up',
         'intensityLabel': 'Pattern color intensity:',
         'intensity': 'Intensity',
-        'generateButton': 'Generate free pattern and instructions',
+        'generateButton': 'Generate pattern',
         'loading': 'Generating your knitting pattern... Please wait...',
         'imageLabel': 'Image:',
         'patternLabel': 'Knitted pattern:',
@@ -32,9 +32,9 @@ const translations = {
     'da': {
         'title': 'Strikke mønster generator',
         'uploadLabel': 'Upload billede af dit ønskede motiv:',
-        'fileHelp': 'Brug et .jpg eller .jpeg billede. Eller vælg et af disse motiver.',
+        'fileHelp': 'Brug et .jpg eller .jpeg billede',
         'heightLabel': 'Ønsket højde (cm):',
-        'heightHelp': 'Fortæl hvilken højde motivet skal have på dit strikketøj',
+        'heightHelp': 'Fortæl hvilken højde motivet skal have',
         'stitchLabel': 'Strikkefasthed, masker:',
         'stitchHelp': 'Angiv antal masker på 10 cm',
         'rowLabel': 'Strikkefasthed, pinde:',
@@ -47,7 +47,7 @@ const translations = {
         'bottomUp': 'Der strikkes nedefra og op',
         'intensityLabel': 'Intensitet af motivets farve:',
         'intensity': 'Intensitet',
-        'generateButton': 'Generer gratis mønster og opskrift',
+        'generateButton': 'Generer mønster',
         'loading': 'Genererer din strikkeopskrift... Vent...',
         'imageLabel': 'Billede:',
         'patternLabel': 'Strikket motiv:',
@@ -77,6 +77,26 @@ function updatePageContent(lang) {
         }
     });
 }
+
+function updatePageContent2(lang) {
+    const elements = document.querySelectorAll('[data-translate]');
+    
+    elements.forEach(element => {
+        const key = element.getAttribute('data-translate');
+        if (translations[lang][key]) {
+            if (element.classList.contains('tooltip-container')) {
+                element.childNodes[0].textContent = translations[lang][key] + " "; // Opdater label-teksten
+                const tooltipText = element.querySelector('.tooltip-description');
+                if (tooltipText) {
+                    tooltipText.textContent = translations[lang]['heightHelp']; // Sæt tooltip-teksten
+                }
+            } else {
+                element.textContent = translations[lang][key];
+            }
+        }
+    });
+}
+
 
 // Export for use in other files
 window.translations = translations;

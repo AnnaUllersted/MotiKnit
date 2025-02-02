@@ -267,41 +267,39 @@ button:hover {
     position: relative;
     display: inline-block;
     cursor: pointer;
-    font-weight: bold;
-    text-decoration: underline;
-    z-index: 1;  /* Sørg for, at tooltip-containeren er ovenpå andre elementer */
+    color: inherit; /* Arver standardfarven fra resten af siden */
+    text-decoration: none; /* Fjerner understregningen */
 }
 
-.tooltip {
+.tooltip-text {
     visibility: hidden;
-    width: 220px;
-    background-color: rgba(37, 9, 9, 0.8);
+    width: 200px;
+    background-color: rgba(0, 0, 0, 0.8);
     color: #fff;
     text-align: center;
-    padding: 10px;
     border-radius: 5px;
+    padding: 10px;
     position: absolute;
-    z-index: 1000;  /* Sørg for, at tooltippet er øverst */
-    bottom: 120%;  /* Justeret for at sikre, at tooltippet er synligt over teksten */
+    bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
+    z-index: 100;
     opacity: 0;
-    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    transition: opacity 0.3s;
 }
 
-.tooltip img {
-    width: 100%;
-    max-height: 150px; /* Maksimal højde på billedet, hvis du vil have et billede */
-    object-fit: cover;
-    border-radius: 5px;
-    margin-top: 5px;
-}
-
-.tooltip-container:hover .tooltip {
+.tooltip-container:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
 }
+
+.tooltip-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 5px;
+}
+
 
 
 /* Mobile Responsive Design */

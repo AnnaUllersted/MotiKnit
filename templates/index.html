@@ -47,17 +47,15 @@
             </div>
             <div class="parameters-container">
                 <div class="form-group">
-                    <label for="size" data-translate="heightLabel">
-                        <span class="tooltip-container">
-                            Ønsket højde test (cm):
-                            <div class="tooltip">
-                                <p>Fortæl hvilken højde motivet skal have på dit strikketøj</p>
-                            </div>
+                    <label for="size" class="tooltip-container" data-translate="heightLabel">
+                        <span class="tooltip-text">
+                            <img src="/static/TT1.jpg" alt="Eksempel billede" class="tooltip-image">
+                            <span class="tooltip-description"></span>
                         </span>
                     </label>
                     <input type="number" id="size" name="size" step="0.1" value="15">
-                    <div class="help-text" data-translate="heightHelp">Fortæl hvilken højde motivet skal have på dit strikketøj</div>
-                </div>
+                    <div class="help-text" data-translate="heightHelp"></div>
+                </div>                
                 
                 <div class="form-group">
                     <label for="masker" data-translate="stitchLabel">Strikkefasthed, masker:</label>
@@ -338,7 +336,7 @@
     if (!['da','en'].includes(currentLang)){
         currentLang = window.location.hostname.includes('motiknit.dk') ? 'da' : 'en'
     }
-    updatePageContent(currentLang);
+    updatePageContent2(currentLang);
     </script>
 </body>
 </html>
