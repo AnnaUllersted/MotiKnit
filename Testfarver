@@ -1,0 +1,38 @@
+from PIL import Image, ImageDraw
+import numpy as np
+
+# Funktion til at vise farverne
+def display_colors(color_counts):
+    color_size = 100  # Størrelsen på hver farveblok
+    padding = 10      # Mellemrum mellem blokke
+    n_colors = len(color_counts)
+    
+    # Opret et billede til at vise farverne
+    image_width = (color_size + padding) * n_colors - padding
+    image_height = color_size
+    canvas = Image.new("RGB", (image_width, image_height), (255, 255, 255))  # Hvid baggrund
+    
+    draw = ImageDraw.Draw(canvas)
+    
+    # Tegn hver farveblok
+    for i, (color, count) in enumerate(color_counts):
+        rgb_color = tuple(map(int, color))  # Konverter np.int64 til int
+        x_start = i * (color_size + padding)
+        x_end = x_start + color_size
+        draw.rectangle([x_start, 0, x_end, color_size], fill=rgb_color)
+    
+    # Vis farverne
+    canvas.show()
+
+# Eksempeldata
+most_common_colors = [
+    ((np.int64(34), np.int64(86), np.int64(28)), 1490),
+    ((np.int64(250), np.int64(211), np.int64(76)), 1024),
+    ((np.int64(17), np.int64(80), np.int64(25)), 149),
+    ((np.int64(34), np.int64(91), np.int64(30)), 99),
+    ((np.int64(249), np.int64(218), np.int64(117)), 50),
+    ((np.int64(250), np.int64(205), np.int64(69)), 31)
+]
+
+# Vis farverne
+display_colors(most_common_colors)

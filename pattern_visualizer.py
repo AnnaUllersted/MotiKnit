@@ -12,7 +12,7 @@ class KnittingPatternVisualizer:
         self.square_px_size = 20
 
 
-    def generate_illustration(self, bw_image, lang='en'):
+    def generate_illustration(self, quantized_image, lang='en'):
         """Generate knitting illustration with grey area and row numbers """
         # Save processed image to base64 for display
         img_buffer = BytesIO()
@@ -28,14 +28,14 @@ class KnittingPatternVisualizer:
         # Tegn det originale billede på det nye lærred med grå kanter
         for y in range(self.height_px):
             for x in range(self.width_px):
-                pixel_color = bw_image.getpixel((x, y))  # 0 eller 255
-                color = (0, 0, 0) if pixel_color == 0 else (255, 255, 255)  # Sort eller hvid
+                pixel_color = quantized_image.getpixel((x, y))  # 0 eller 255
+                # color = (0, 0, 0) if pixel_color == 0 else (255, 255, 255)  # Sort eller hvid
                 pixel_x = text_space_width + x * self.square_px_size
                 pixel_y = y * self.square_px_size
                 # Fyld midten af det grå område med den originale pixels farve
                 for i in range(1, self.square_px_size - 1):  # Undgå de yderste pixels (grå kant)
                     for j in range(1, self.square_px_size - 1):
-                        canvas.putpixel((pixel_x + i, pixel_y + j), color)
+                        canvas.putpixel((pixel_x + i, pixel_y + j), pixel_color)
 
         # Tilføj tekst ud for hver række
         draw = ImageDraw.Draw(canvas)

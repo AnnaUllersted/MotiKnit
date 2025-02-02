@@ -70,16 +70,20 @@ def process():
                 pinde,
                 masker,
                 bottom_to_top,
-                alternating_iteration)
+                alternating_iteration,
+                intensity)
             
-            bw_image = pattern_generator.process_to_bw_pixels(intensity)
+            bw_image = pattern_generator.process_to_bw_pixels()
+            quantized_image = pattern_generator.process_to_color_quantized(6)
+            sizetest = quantized_image.size 
+            logger.info(f"størrelsen er {sizetest}")
             instructions = pattern_generator.generate_knitting_instructions(bw_image, color1, color2, language)
 
             pattern_visualizer = KnittingPatternVisualizer(
                 pattern_generator.width_px, 
                 pattern_generator.height_px)
             # Generate illustration
-            pattern_image = pattern_visualizer.generate_illustration(bw_image, language)
+            pattern_image = pattern_visualizer.generate_illustration(quantized_image, language)
             img_str = base64.b64encode(pattern_image).decode()
 
             size_str = translate('final_size', language, size=desired_height_cm)

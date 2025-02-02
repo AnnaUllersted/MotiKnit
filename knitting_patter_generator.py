@@ -1,9 +1,11 @@
 from PIL import Image
 import numpy as np
 from translator import translate
+from sklearn.cluster import KMeans
+from collections import Counter
 
 class KnittingPatternGenerator:
-    def __init__(self, image, desired_height_cm, desired_rows, desired_columns, bottom_to_top, alternating_iterations):
+    def __init__(self, image, desired_height_cm, desired_rows, desired_columns, bottom_to_top, alternating_iterations, intensity):
         self.image = image
         self.desired_height_cm = desired_height_cm
         self.desired_rows = desired_rows
@@ -12,6 +14,7 @@ class KnittingPatternGenerator:
         self.alternating_iterations = alternating_iterations
         self.greyscale_image: Image = None
         self.width_px, self.height_px = self.get_target_px_width_and_height()
+        self.intensity = intensity
 
 
     def get_target_px_width_and_height(self):
@@ -27,7 +30,7 @@ class KnittingPatternGenerator:
         return target_width_px, target_height_px
 
     
-    def process_to_bw_pixels(self,intensity):
+    def process_to_bw_pixels(self):
         """Convert image to black and white pixels of specified size"""
         if self.greyscale_image is None:
 
@@ -36,11 +39,155 @@ class KnittingPatternGenerator:
             # Convert to grayscale
             self.grayscale: Image = resized.convert('L')
 
-        intensity_remap = intensity * 255/100
+        intensity_remap = self.intensity * 255/100
         # Convert to pure black and white (threshold at 128)
         bw_image = self.grayscale.point(lambda x: 0 if x < intensity_remap else 255, '1')
 
         return bw_image
+
+
+    # def process_to_color_quantized(self, n_colors):
+    #     # Åbn billedet
+    #     image = self.image.convert('RGB')
+
+    #     # Resize image
+    #     image = self.image.resize((self.width_px, self.height_px), Image.Resampling.LANCZOS)
+
+    #     # Konverter billedet til en numpy-array
+    #     img_data = np.array(image)
+    #     w, h, d = img_data.shape
+    #     img_flat = img_data.reshape((-1, 3))  # Flad array til (pixels, RGB)
+
+    #     # Udfør KMeans clustering
+    #     kmeans = KMeans(n_clusters=n_colors, random_state=42)
+    #     kmeans.fit(img_flat)
+
+    #     # Erstat hver pixel med dens nærmeste centroids farve
+    #     clustered_img = kmeans.cluster_centers_[kmeans.labels_]
+    #     clustered_img = clustered_img.reshape((w, h, 3)).astype('uint8')
+
+    #     # Konverter tilbage til et PIL Image og gem resultatet
+    #     quantized_image = Image.fromarray(clustered_img)
+        
+    #     return quantized_image
+    
+
+    # def process_to_color_quantized(self, n_colors):
+    #     # Åbn billedet og konverter til RGB
+    #     image = self.image.convert('RGB')
+
+    #     # Konverter det originale billede til en numpy-array
+    #     original_img_data = np.array(image)
+    #     w, h, d = original_img_data.shape
+    #     img_flat = original_img_data.reshape((-1, 3))  # Flad array til (pixels, RGB)
+
+    #     # Udfør KMeans clustering på det originale billede
+    #     kmeans = KMeans(n_clusters=n_colors, random_state=42)
+    #     kmeans.fit(img_flat)
+
+    #     # Hent de fundne farver (centroids)
+    #     centroids = kmeans.cluster_centers_
+
+    #     # Resize det oprindelige billede
+    #     resized_image = image.resize((self.width_px, self.height_px), Image.Resampling.LANCZOS)
+    #     resized_img_data = np.array(resized_image)
+
+    #     # Erstat hver pixel i det resized billede med dens nærmeste farve fra centroids
+    #     resized_flat = resized_img_data.reshape((-1, 3))  # Flad array til (pixels, RGB)
+    #     labels = kmeans.predict(resized_flat)  # Brug KMeans modelen til at forudsige farver
+    #     clustered_img = centroids[labels]
+    #     clustered_img = clustered_img.reshape((self.height_px, self.width_px, 3)).astype('uint8')
+
+    #     # Konverter tilbage til et PIL Image og returnér
+    #     quantized_image = Image.fromarray(clustered_img)
+    #     return quantized_image
+
+    # def process_to_color_quantized(self, n_colors):
+    #     # Åbn billedet og konverter til RGB
+    #     image = self.image.convert('RGB')
+
+    #     # Konverter det originale billede til en numpy-array
+    #     original_img_data = np.array(image)
+    #     w, h, d = original_img_data.shape
+    #     img_flat = original_img_data.reshape((-1, 3))  # Flad array til (pixels, RGB)
+
+    #     # Find de mest hyppige farver i det originale billede
+    #     color_counts = Counter(map(tuple, img_flat))  # Tæl unikke farver
+    #     most_common_colors = [color for color, _ in color_counts.most_common(n_colors)]
+
+    #     # Opret en lookup-tabel for farveklassifikation
+    #     color_lookup = {tuple(color): idx for idx, color in enumerate(most_common_colors)}
+
+    #     # Resize det oprindelige billede
+    #     resized_image = image.resize((self.width_px, self.height_px), Image.Resampling.LANCZOS)
+    #     resized_img_data = np.array(resized_image)
+
+    #     # Erstat hver pixel i det resized billede med den nærmeste farve fra de fundne farver
+    #     clustered_img = np.zeros_like(resized_img_data)
+    #     for i, row in enumerate(resized_img_data):
+    #         for j, pixel in enumerate(row):
+    #             pixel_tuple = tuple(pixel)
+    #             if pixel_tuple in color_lookup:
+    #                 clustered_img[i, j] = most_common_colors[color_lookup[pixel_tuple]]
+    #             else:
+    #                 # Hvis en pixel ikke findes i de mest almindelige farver, tag den nærmeste
+    #                 clustered_img[i, j] = min(most_common_colors, key=lambda c: np.linalg.norm(np.array(c) - pixel))
+
+    #     # Konverter tilbage til et PIL Image og returnér
+    #     quantized_image = Image.fromarray(clustered_img.astype('uint8'))
+    #     return quantized_image
+
+
+    def process_to_color_quantized(self, n_colors, tolerance=10):
+        """
+        Process image to a color-quantized version with n_colors distinct colors.
+        """
+        # Åbn billedet og konverter til RGB
+        image = self.image.convert('RGB')
+
+        # Konverter det originale billede til en numpy-array
+        original_img_data = np.array(image)
+        img_flat = original_img_data.reshape((-1, 3))  # Flad array til (pixels, RGB)
+
+        # Gruppér lignende farver inden for en tolerance
+        def find_or_add_color(color, color_list, tolerance):
+            for existing_color in color_list:
+                if np.linalg.norm(np.array(color) - np.array(existing_color)) <= tolerance:
+                    return existing_color
+            color_list.append(color)
+            return color
+
+        # Reducer farvepaletten med tolerance
+        reduced_colors = []
+        for color in map(tuple, img_flat):
+            find_or_add_color(color, reduced_colors, tolerance)
+
+        # Tæl de reducerede farver
+        reduced_color_counts = Counter(map(tuple, reduced_colors))
+        most_common_colors = [color for color, _ in reduced_color_counts.most_common(n_colors)]
+
+        # Resize det oprindelige billede
+        resized_image = image.resize((self.width_px, self.height_px), Image.Resampling.LANCZOS)
+        resized_img_data = np.array(resized_image)
+
+        # Erstat hver pixel i det resized billede med den nærmeste farve fra de fundne farver
+        clustered_img = np.zeros_like(resized_img_data)
+        for i, row in enumerate(resized_img_data):
+            for j, pixel in enumerate(row):
+                # Find den nærmeste farve
+                closest_color = min(
+                    most_common_colors,
+                    key=lambda c: np.linalg.norm(np.array(c) - np.array(pixel))
+                )
+                clustered_img[i, j] = closest_color
+
+        # Konverter tilbage til et PIL Image og returnér
+        quantized_image = Image.fromarray(clustered_img.astype('uint8'))
+        return quantized_image
+
+
+
+
 
 
     def generate_knitting_instructions(self, bw_image, color1, color2, lang='en'):
