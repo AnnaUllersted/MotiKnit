@@ -30,10 +30,11 @@
                 <div class="mobile-input-container">
                     <input type="file" id="fileInput" accept=".jpg,.jpeg">
                 </div>
-                <div class="help-text" data-translate="fileHelp">Brug et .jpg eller .jpeg billede. Eller vælg et af disse motiver.</div>
+                <div class="help-text" data-translate="fileHelp">Brug et .jpg eller .jpeg billede.</div>
             </div>
             
             <div class="preset-images">
+                <label for="Eksempler" data-translate="Examples">Eksempler:</label>
                 <div class="preset-grid">
                     <img src="/static/preset1.jpg" class="preset-image" alt="Preset 1" onclick="selectPresetImage(this)">
                     <img src="/static/preset2.jpg" class="preset-image" alt="Preset 2" onclick="selectPresetImage(this)">
@@ -46,7 +47,14 @@
             </div>
             <div class="parameters-container">
                 <div class="form-group">
-                    <label for="size" data-translate="heightLabel">Ønsket højde (cm):</label>
+                    <label for="size" data-translate="heightLabel">
+                        <span class="tooltip-container">
+                            Ønsket højde test (cm):
+                            <div class="tooltip">
+                                <p>Fortæl hvilken højde motivet skal have på dit strikketøj</p>
+                            </div>
+                        </span>
+                    </label>
                     <input type="number" id="size" name="size" step="0.1" value="15">
                     <div class="help-text" data-translate="heightHelp">Fortæl hvilken højde motivet skal have på dit strikketøj</div>
                 </div>
@@ -90,7 +98,7 @@
             <div class="form-group">
                 <div class="center-button-container">
                     <div class="ButtonToGenerate">
-                        <button type="submit" data-translate="generateButton">Generer gratis mønster og opskrift</button>
+                        <button type="submit" data-translate="generateButton">Generer mønster</button>
                     </div>
                 </div>
             </div>
