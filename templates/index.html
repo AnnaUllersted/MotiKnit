@@ -34,7 +34,7 @@
             </div>
             
             <div class="preset-images">
-                <label for="Eksempler" data-translate="Examples">Eksempler:</label>
+                <label for="Eksempler" data-translate="Examples"></label>
                 <div class="preset-grid">
                     <img src="/static/preset1.jpg" class="preset-image" alt="Preset 1" onclick="selectPresetImage(this)">
                     <img src="/static/preset2.jpg" class="preset-image" alt="Preset 2" onclick="selectPresetImage(this)">
@@ -50,23 +50,30 @@
                     <label for="size" class="tooltip-container" data-translate="heightLabel">
                         <span class="tooltip-text">
                             <img src="/static/TT1.jpg" alt="Eksempel billede" class="tooltip-image">
-                            <span class="tooltip-description"></span>
+                            <span class="tooltip-description-heightLabel"></span>
                         </span>
                     </label>
                     <input type="number" id="size" name="size" step="0.1" value="15">
-                    <div class="help-text" data-translate="heightHelp"></div>
                 </div>                
                 
                 <div class="form-group">
-                    <label for="masker" data-translate="stitchLabel">Strikkefasthed, masker:</label>
+                    <label for="masker" class="tooltip-container" data-translate="stitchLabel">
+                        <span class="tooltip-text">
+                            <img src="/static/TT3.jpg" alt="Eksempel billede" class="tooltip-image">
+                            <span class="tooltip-description-stitchLabel"></span>
+                        </span>
+                    </label>
                     <input type="number" id="masker" name="masker" step="1" value="18">
-                    <div class="help-text" data-translate="stitchHelp">Angiv antal masker på 10 cm</div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="pinde" data-translate="rowLabel">Strikkefasthed, pinde:</label>
+                    <label for="pinde" class="tooltip-container" data-translate="rowLabel">
+                        <span class="tooltip-text">
+                            <img src="/static/TT2.jpg" alt="Eksempel billede" class="tooltip-image">
+                            <span class="tooltip-description-rowLabel"></span>
+                        </span>
+                    </label>
                     <input type="number" id="pinde" name="pinde" step="1" value="24">
-                    <div class="help-text" data-translate="rowHelp">Angiv antal pinde på 10 cm</div>
                 </div>
             </div>
             <div class="methods-container">

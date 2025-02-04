@@ -291,6 +291,8 @@ button:hover {
 .tooltip-container:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 100;
 }
 
 .tooltip-image {
