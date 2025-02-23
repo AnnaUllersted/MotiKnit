@@ -3,6 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--------------- copy directly from google analytics ----------------------------->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BPPSM0XE3R"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-BPPSM0XE3R');
+    </script>
+    <!--------------- end of copy ---------------------->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="{{ url_for('static', filename='js/translations.js') }}"></script>
@@ -345,5 +356,6 @@
     }
     updatePageContent2(currentLang);
     </script>
+
 </body>
 </html>
