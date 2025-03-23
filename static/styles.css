@@ -18,9 +18,9 @@
 
 body {
     font-family: 'Quicksand', sans-serif;
-    background-color: #f8ecd9;
+    background-color: #FAF5EB;
     color: #391212;
-    font-size: 1rem;
+    font-size: 1.3rem;
     line-height: 1.0;
     padding: 12px;
 }
@@ -59,7 +59,7 @@ h2 {
 
 /* Form and Input Styles */
 .upload-container {
-    background-color: #8FA4D1;
+    background-color: #BDC9E5;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -102,8 +102,8 @@ select {
 }
 
 .help-text {
-    font-size: 0.875rem;
-    color: #391212;
+    font-size: 1rem;
+    color: #000000;
     margin-top: 5px;
 }
 
@@ -129,7 +129,7 @@ button {
 }
 
 button:hover {
-    background-color: #4a1818;
+    background-color: #641e1e;
 }
 
 .preset-grid {
@@ -220,7 +220,7 @@ button:hover {
 
 /* Result Container */
 .result-container {
-    background-color: #8FA4D1;
+    background-color:  #BDC9E5;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -262,6 +262,47 @@ button:hover {
     margin: 15px 0;
     font-family: 'Quicksand', sans-serif;
 }
+
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    color: inherit; /* Arver standardfarven fra resten af siden */
+    text-decoration: none; /* Fjerner understregningen */
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 10px;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 100;
+}
+
+.tooltip-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 5px;
+}
+
+
 
 /* Mobile Responsive Design */
 @media (max-width: 770px) {
