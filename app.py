@@ -1,10 +1,9 @@
 from flask import Flask, request, render_template, jsonify, send_file, make_response
 import os
 import base64
-from io import BytesIO
 import numpy as np
 from pdf_generator import create_pattern_pdf
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image
 import logging
 from knitting_patter_generator import KnittingPatternGenerator
 from pattern_visualizer import KnittingPatternVisualizer
