@@ -1,14 +1,12 @@
-from flask import Flask, request, render_template, jsonify, send_file, make_response
+from flask import Flask, request, render_template, jsonify, make_response, Blueprint
 import os
 import base64
-import numpy as np
 from pdf_generator import create_pattern_pdf
 from PIL import Image
 import logging
 from knitting_patter_generator import KnittingPatternGenerator
 from pattern_visualizer import KnittingPatternVisualizer
 import sys
-from pathlib import Path
 from dotenv import load_dotenv
 from translator import translate
 
@@ -123,6 +121,7 @@ def download_pdf():
     except Exception as e:
         return jsonify({'error': translate('error_message', language, error=str(e))}), 500
 
+
 def is_it_true(value):
   return value.lower() == 'true'
 
@@ -134,4 +133,4 @@ if __name__ == '__main__':
     logger.info('Started')
     app.run(host=host, port=port, debug=False)
     app.logger.addHandler(logging.StreamHandler(sys.stdout))
-    app.logger.setLevel(logging.ERROR)
+    app.logger.setLevel(logging.DEBUG)

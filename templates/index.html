@@ -174,6 +174,27 @@
             <button id="downloadPdfButton" class="download-button" data-translate="downloadPDF">Download PDF</button>
         </div>
     </div>
+    <div class="insta-title">
+        <h3 data-translate="insta-tagline">Følg os på instagram</h3>
+    </div>
+    <div class="instagram-grid">
+        <!-- Embed code for each Instagram post goes here -->
+        <div class="instagram-item">
+            <img src="/static/insta1.jpg">
+        </div>
+        <div class="instagram-item">
+            <img src="/static/insta2.jpg">
+        </div>
+        <div class="instagram-item">
+            <img src="/static/insta3.jpg">
+        </div>
+        <div class="instagram-item">
+            <img src="/static/insta4.jpg">
+        </div>
+        <div class="instagram-item">
+            <img src="/static/insta5.jpg">
+        </div>
+      </div>
 
     <p id="error" class="error"></p>
     <script>
@@ -375,7 +396,15 @@
         currentLang = window.location.hostname.includes('motiknit.dk') ? 'da' : 'en'
     }
     updatePageContent(currentLang);
-    </script>
 
+    function redirectToInstagram() {
+    window.open("https://www.instagram.com/motiknit/", "_blank");
+    }
+
+    // Select all Instagram images and add the click event
+    document.querySelectorAll(".instagram-item img").forEach(img => {
+        img.addEventListener("click", redirectToInstagram);
+    });
+    </script>
 </body>
 </html>
