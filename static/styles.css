@@ -253,6 +253,62 @@ button:hover {
     text-align: center;
     font-family: 'Quicksand', sans-serif;
 }
+/* Instagram Grid Container */
+.instagram-grid {
+    display: grid;
+    gap: 10px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+  
+  .insta-title {
+    text-align: center;
+    font-family: 'Hatton', sans-serif;
+    color: #391212;
+    margin-bottom: 20px;
+  }
+
+  /* Desktop/Laptop View - 6 columns */
+  @media (min-width: 992px) {
+    .instagram-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+  
+  /* Tablet View - 3 columns, 2 rows */
+  @media (max-width: 991px) and (min-width: 576px) {
+    .instagram-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  /* Mobile View - 3 columns, 2 rows but smaller */
+  @media (max-width: 575px) {
+    .instagram-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px; /* Smaller gap for mobile */
+    }
+    .instagram-item img {
+        max-width: 100px; /* Reduce size on smaller screens */
+        max-height: 100px;
+    }
+  }
+  
+  .instagram-item img {
+    width: 100%; /* Makes images adapt to the grid */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 275px; /* Set a fixed width */
+    max-height: 300px; /* Set a fixed height */
+    object-fit: cover; /* Ensures the image fills the space without distortion */
+    border-radius: 10px; /* Optional: Rounds the corners */
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.instagram-item img:hover {
+    transform: scale(1.1);
+}
 
 /* Parameters and Methods containers */
 .parameters-container,

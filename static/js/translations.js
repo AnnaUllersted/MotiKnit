@@ -28,7 +28,8 @@ const translations = {
         'instructions': 'Instructions:',
         'downloadPDF': 'Download PDF',
         'generatingPDF': 'Generating PDF...',
-        'Examples': 'Examples'
+        'Examples': 'Examples',
+        'insta-tagline':"Follow us on instagram"
     },
     'da': {
         'title': 'Strikke mønster generator',
@@ -59,7 +60,8 @@ const translations = {
         'instructions': 'Instruktioner:',
         'downloadPDF': 'Download PDF',
         'generatingPDF': 'Genererer PDF...',
-        'Examples': 'Eksempler'
+        'Examples': 'Eksempler',
+        'insta-tagline':'Følg os på instagram'
     }
 };
 
