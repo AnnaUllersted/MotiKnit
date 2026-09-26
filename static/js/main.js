@@ -1,3 +1,9 @@
+function trackEvent(name, params) {
+    if (typeof gtag === 'function') {
+        gtag('event', name, params || {});
+    }
+}
+
 let currentProcessedImage = null;
 let currentParameters = null;
 let currentInstructions = null;
@@ -67,6 +73,8 @@ async function selectPresetImage(imgElement) {
             slider.value = presetSettings[imageName];
             output.innerHTML = slider.value;
         }
+
+        trackEvent('select_preset_image', { preset_name: imageName });
     } catch (error) {
         errorElement.textContent = 'Error loading preset image';
     }
@@ -83,6 +91,7 @@ fileInput.addEventListener('change', function(e) {
             imageGrid.style.display = 'flex'; // Show image grid with flex layout
         }
         reader.readAsDataURL(file);
+        trackEvent('upload_custom_image');
     }
 });
 
@@ -106,6 +115,15 @@ document.getElementById('uploadForm').addEventListener('submit', async (e) => {
     formData.append('bottom_to_top', document.getElementById('bottom_to_top').value);
     formData.append('intensity', sliderValue);
     
+    trackEvent('generate_pattern', {
+        height_cm: document.getElementById('size').value,
+        gauge_stitches: document.getElementById('masker').value,
+        gauge_rows: document.getElementById('pinde').value,
+        method: document.getElementById('alternating_iteration').value,
+        start: document.getElementById('bottom_to_top').value,
+        intensity: sliderValue
+    });
+
     try {
         errorElement.textContent = '';
         resultDiv.style.display = 'none';
@@ -116,9 +134,9 @@ document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             method: 'POST',
             body: formData
         })
-        
+
         const data = await response.json();
-        
+
         if (response.ok) {
             processedImage.src = `data:image/png;base64,${data.processed_image}`;
             processedImage.style.display = 'block'; // Show the resulting image
@@ -143,21 +161,28 @@ document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             
             resultDiv.style.display = 'block'; // Show result container
             document.getElementById('downloadContainer').style.display = 'block';
+
+            trackEvent('generate_pattern_success', {
+                final_width: data.parameters.final_width,
+                final_height: data.parameters.final_height
+            });
         } else {
             throw new Error(data.error);
         }
     } catch (error) {
         errorElement.textContent = error.message;
+        trackEvent('generate_pattern_error', { error_message: error.message });
     } finally {
         loadingElement.style.display = 'none'; // Hide loading
     }
 });
 
 document.getElementById('downloadPdfButton').addEventListener('click', async () => {
+trackEvent('download_pdf_click');
+const downloadButton = document.getElementById('downloadPdfButton');
+const originalText = downloadButton.textContent;
 try {
     // Show loading state
-    const downloadButton = document.getElementById('downloadPdfButton');
-    const originalText = downloadButton.textContent;
     downloadButton.textContent = 'Genererer PDF...';
     downloadButton.disabled = true;
 
@@ -181,12 +206,13 @@ try {
 
     // Use FileSaver.js for other devices
     saveAs(blob, 'knitting_pattern.pdf');
-    
+
+    trackEvent('download_pdf_success');
 } catch (error) {
     errorElement.textContent = 'Error generating PDF: ' + error.message;
+    trackEvent('download_pdf_error', { error_message: error.message });
 } finally {
     // Reset button state
-    const downloadButton = document.getElementById('downloadPdfButton');
     downloadButton.textContent = originalText;
     downloadButton.disabled = false;
 }
@@ -198,10 +224,19 @@ currentLang = window.location.hostname.includes('motiknit.dk') ? 'da' : 'en'
 updatePageContent(currentLang);
 
 function redirectToInstagram() {
+trackEvent('social_click', { platform: 'instagram' });
 window.open("https://www.instagram.com/motiknit/", "_blank");
 }
 
 // Select all Instagram images and add the click event
 document.querySelectorAll(".instagram-item img").forEach(img => {
 img.addEventListener("click", redirectToInstagram);
+});
+
+// Track language switch clicks (these navigate to the other domain)
+document.querySelectorAll(".flag-link").forEach(link => {
+link.addEventListener("click", function() {
+    const targetLang = this.href.includes('motiknit.dk') ? 'da' : 'en';
+    trackEvent('language_switch', { target_lang: targetLang });
+});
 });
