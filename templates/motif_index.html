@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ t.index_title }}</title>
+  <meta name="description" content="{{ t.index_meta_description }}">
+  <link rel="canonical" href="{{ page_url }}">
+
+  <!-- Google Consent Mode: deny non-essential tracking until the user accepts the cookie banner -->
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
+      'analytics_storage': 'denied'
+  });
+  </script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BPPSM0XE3R"></script>
+  <script>
+  gtag('js', new Date());
+  gtag('config', 'G-BPPSM0XE3R');
+  </script>
+  <!-- Pinterest Tag is only loaded after consent is granted, see cookie-consent.js -->
+
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --cream: #F8F4EC; --ink: #3A1414; }
+    body { margin: 0; background: var(--cream); color: var(--ink); font-family: "Quicksand", sans-serif; }
+    main { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }
+    h1 { font-family: Georgia, serif; font-size: 2rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px;
+            list-style: none; padding: 0; }
+    .grid a { display: block; color: var(--ink); text-decoration: none; }
+    .grid img { width: 100%; aspect-ratio: 1; object-fit: contain; background: #fff; border-radius: 8px; }
+    .grid a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+    .cookie-banner { position: fixed; left: 0; bottom: 0; width: 100%; z-index: 200;
+        background: var(--ink); color: var(--cream); padding: 16px 20px; display: flex;
+        flex-wrap: wrap; align-items: center; justify-content: center; gap: 20px;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2); }
+    .cookie-banner p { margin: 0; max-width: 600px; font-size: 1rem; text-align: center; }
+    .cookie-buttons { display: flex; gap: 10px; flex-shrink: 0; }
+    .cookie-buttons button { padding: 10px 24px; font-size: 1rem; font-family: "Quicksand", sans-serif;
+        border-radius: 5px; border: none; cursor: pointer; background: var(--cream); color: var(--ink); }
+    .cookie-decline { background: transparent; color: var(--cream); border: 1px solid var(--cream); }
+  </style>
+</head>
+<body>
+  <div id="cookieConsent" class="cookie-banner" style="display: none;">
+    <p>{{ t.cookie_message }}</p>
+    <div class="cookie-buttons">
+      <button id="cookieAccept" type="button">{{ t.cookie_accept }}</button>
+      <button id="cookieDecline" type="button" class="cookie-decline">{{ t.cookie_decline }}</button>
+    </div>
+  </div>
+  <main>
+    <h1>{{ t.page_heading }}</h1>
+    <ul class="grid">
+      {% for m in motifs %}
+      <li>
+        <a href="{{ url_for('motif_pages.motif_page', slug=m.slug) }}">
+          <img src="{{ url_for('static', filename=m.chart_image) }}" alt="" loading="lazy">
+          {{ m.title }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </main>
+  <script src="{{ url_for('static', filename='js/cookie-consent.js') }}"></script>
+</body>
+</html>
