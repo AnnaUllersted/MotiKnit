@@ -12,4 +12,4 @@ jobs:
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}} #The Heroku api key we stored on our repo secret
           heroku_app_name: "motiknit" #The name of your heroku app - Must be unique in Heroku
-          heroku_email: "asgerrasmussen97@gmail.com" #Your heroku yuser name
+          heroku_email: ${{secrets.HEROKU_EMAIL}} #The email of the Heroku account that owns the API key, stored as a repo secret
