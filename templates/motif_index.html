@@ -6,6 +6,11 @@
   <title>{{ t.index_title }}</title>
   <meta name="description" content="{{ t.index_meta_description }}">
   <link rel="canonical" href="{{ page_url }}">
+  {% if alternates %}
+  <link rel="alternate" hreflang="da" href="{{ alternates.da }}">
+  <link rel="alternate" hreflang="en" href="{{ alternates.en }}">
+  <link rel="alternate" hreflang="x-default" href="{{ alternates.en }}">
+  {% endif %}
 
   <!-- Google Consent Mode: deny non-essential tracking until the user accepts the cookie banner -->
   <script>
@@ -33,6 +38,8 @@
     body { margin: 0; background: var(--cream); color: var(--ink); font-family: "Quicksand", sans-serif; }
     main { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }
     h1 { font-family: Georgia, serif; font-size: 2rem; }
+    .back-link { color: var(--ink); }
+    .back-link:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px;
             list-style: none; padding: 0; }
     .grid a { display: block; color: var(--ink); text-decoration: none; }
@@ -59,11 +66,12 @@
     </div>
   </div>
   <main>
+    <a class="back-link" href="/">{{ t.back_to_generator }}</a>
     <h1>{{ t.page_heading }}</h1>
     <ul class="grid">
       {% for m in motifs %}
       <li>
-        <a href="{{ url_for('motif_pages.motif_page', slug=m.slug) }}">
+        <a href="{{ url_for('motif_pages.motif_page', slug=m.slug, **link_args) }}">
           <img src="{{ url_for('static', filename=m.chart_image) }}" alt="" loading="lazy">
           {{ m.title }}
         </a>

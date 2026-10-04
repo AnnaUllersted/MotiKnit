@@ -6,6 +6,11 @@
   <title>{{ motif.title }} {{ t.title_suffix }}</title>
   <meta name="description" content="{{ motif.description }}">
   <link rel="canonical" href="{{ page_url }}">
+  {% if alternates %}
+  <link rel="alternate" hreflang="da" href="{{ alternates.da }}">
+  <link rel="alternate" hreflang="en" href="{{ alternates.en }}">
+  <link rel="alternate" hreflang="x-default" href="{{ alternates.en }}">
+  {% endif %}
 
   <!-- Open Graph: used by Pinterest (rich pins), Facebook and others -->
   <meta property="og:type" content="article">
@@ -70,7 +75,7 @@
     </div>
   </div>
   <main>
-    <a href="{{ url_for('motif_pages.motif_index') }}">{{ t.all_motifs }}</a>
+    <a href="{{ url_for('motif_pages.motif_index', **link_args) }}">{{ t.all_motifs }}</a>
 
     <h1>{{ motif.title }}</h1>
     <p>{{ motif.description }}</p>

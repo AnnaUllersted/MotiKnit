@@ -210,6 +210,12 @@ img.addEventListener("click", redirectToInstagram);
 const yarnMenu = document.getElementById('yarnMenu');
 const yarnMenuButton = document.getElementById('yarnMenuButton');
 
+// Keep the language the visitor is seeing when they open the motif pages
+const domainLang = window.location.hostname.includes('motiknit.dk') ? 'da' : 'en';
+if (currentLang !== domainLang) {
+    document.querySelector('#yarnMenuList a[href="/motifs"]').href = '/motifs?lang=' + currentLang;
+}
+
 function setYarnMenuOpen(open) {
     yarnMenu.classList.toggle('open', open);
     yarnMenuButton.setAttribute('aria-expanded', String(open));

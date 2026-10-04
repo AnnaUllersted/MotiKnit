@@ -27,6 +27,7 @@ UI_TEXT = {
         "index_meta_description": "Free colourwork knitting charts: animals, letters, food and more. Adjust any motif to your own size and gauge.",
         "page_heading": "Free knitting charts",
         "all_motifs": "All motifs",
+        "back_to_generator": "Back to the generator",
         "title_suffix": "– free pattern | MotiKnit",
         "need_different": "Need a different size or gauge? Make your own version in the generator.",
         "open_generator": "Open the generator",
@@ -40,6 +41,7 @@ UI_TEXT = {
         "index_meta_description": "Gratis strikkeopskrifter til farvestrikning: dyr, bogstaver, mad og meget mere. Tilpas ethvert motiv til din egen størrelse og strikkefasthed.",
         "page_heading": "Gratis strikkeopskrifter",
         "all_motifs": "Alle motiver",
+        "back_to_generator": "Tilbage til generatoren",
         "title_suffix": "– gratis opskrift | MotiKnit",
         "need_different": "Har du brug for en anden størrelse eller strikkefasthed? Lav din egen version i generatoren.",
         "open_generator": "Åbn generatoren",
@@ -50,8 +52,19 @@ UI_TEXT = {
 }
 
 
-def get_language():
+def domain_language():
     return "da" if "motiknit.dk" in request.host else "en"
+
+
+def get_language():
+    """?lang=da|en overrides the domain, so the language chosen on the generator page carries over."""
+    requested = request.args.get("lang")
+    return requested if requested in UI_TEXT else domain_language()
+
+
+def link_args(lang):
+    """Extra url_for() arguments that keep a non-default language across internal links."""
+    return {} if lang == domain_language() else {"lang": lang}
 
 
 def site_url():
@@ -97,6 +110,26 @@ def localize_motif(motif, lang):
     }
 
 
+def alternate_urls(endpoint, **values):
+    """The same page on the Danish and English domains, for hreflang tags.
+
+    Derived from the current host so www/non-www is preserved. Returns None on
+    hosts that are neither motiknit.dk nor motiknit.com (e.g. localhost).
+    """
+    host = request.host
+    if "motiknit.dk" in host:
+        da_host, en_host = host, host.replace("motiknit.dk", "motiknit.com")
+    elif "motiknit.com" in host:
+        en_host, da_host = host, host.replace("motiknit.com", "motiknit.dk")
+    else:
+        return None
+    path = url_for(endpoint, **values)
+    return {
+        "da": f"{request.scheme}://{da_host}{path}",
+        "en": f"{request.scheme}://{en_host}{path}",
+    }
+
+
 def absolute(endpoint, **values):
     """Full URL for the domain that served the current request (Pinterest, Google, Open Graph)."""
     return site_url() + url_for(endpoint, **values)
@@ -112,8 +145,10 @@ def motif_index():
         "motif_index.html",
         motifs=motifs,
         lang=lang,
+        link_args=link_args(lang),
         t=UI_TEXT[lang],
         page_url=absolute("motif_pages.motif_index"),
+        alternates=alternate_urls("motif_pages.motif_index"),
     )
 
 
@@ -127,8 +162,10 @@ def motif_page(slug):
         "motif.html",
         motif=localize_motif(motif, lang),
         lang=lang,
+        link_args=link_args(lang),
         t=UI_TEXT[lang],
         page_url=absolute("motif_pages.motif_page", slug=slug),
+        alternates=alternate_urls("motif_pages.motif_page", slug=slug),
         image_url=absolute("static", filename=motif["chart_image"]),
     )
 
