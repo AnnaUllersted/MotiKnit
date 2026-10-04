@@ -10,11 +10,14 @@ import sys
 from dotenv import load_dotenv
 from translator import translate
 from motif_pages import motif_pages
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 load_dotenv()
 ENVIRONMENT = os.environ.get('FLASK_ENV', 'production')
 print(ENVIRONMENT)
 app = Flask(__name__)
+# Heroku terminates HTTPS at its router; trust X-Forwarded-Proto so request.scheme is "https"
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1)
 app.register_blueprint(motif_pages)
 logger = logging.getLogger(__name__)
 
