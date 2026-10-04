@@ -9,7 +9,7 @@ function loadPinterestTag() {
       t=document.createElement("script");t.async=!0,t.src=e;var
       r=document.getElementsByTagName("script")[0];
       r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js");
-    pintrk('load', '2612789882408');
+    pintrk('load', '2613768165803');
     pintrk('page');
 }
 

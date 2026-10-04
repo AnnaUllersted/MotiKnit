@@ -30,6 +30,7 @@ const translations = {
         'generatingPDF': 'Generating PDF...',
         'Examples': 'Examples',
         'insta-tagline':"Follow us on instagram",
+        'menuMotifs': 'Free knitting motifs',
         'cookieMessage': 'We use cookies (Google Analytics and Pinterest) to measure traffic and improve the site. You can accept or decline them.',
         'cookieAccept': 'Accept',
         'cookieDecline': 'Decline'
@@ -65,6 +66,7 @@ const translations = {
         'generatingPDF': 'Genererer PDF...',
         'Examples': 'Eksempler',
         'insta-tagline':'Følg os på instagram',
+        'menuMotifs': 'Gratis strikkemotiver',
         'cookieMessage': 'Vi bruger cookies (Google Analytics og Pinterest) til at måle trafik og forbedre siden. Du kan acceptere eller afvise dem.',
         'cookieAccept': 'Accepter',
         'cookieDecline': 'Afvis'

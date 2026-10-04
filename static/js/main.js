@@ -233,6 +233,39 @@ document.querySelectorAll(".instagram-item img").forEach(img => {
 img.addEventListener("click", redirectToInstagram);
 });
 
+// Yarn icon dropdown menu
+const yarnMenu = document.getElementById('yarnMenu');
+const yarnMenuButton = document.getElementById('yarnMenuButton');
+
+// Keep the language the visitor is seeing when they open the motif pages
+const domainLang = window.location.hostname.includes('motiknit.dk') ? 'da' : 'en';
+if (currentLang !== domainLang) {
+    document.querySelector('#yarnMenuList a[href="/motifs"]').href = '/motifs?lang=' + currentLang;
+}
+
+function setYarnMenuOpen(open) {
+    yarnMenu.classList.toggle('open', open);
+    yarnMenuButton.setAttribute('aria-expanded', String(open));
+}
+
+// With a mouse the menu opens on hover (CSS); click/tap and keyboard toggle it otherwise
+yarnMenuButton.addEventListener('click', (e) => {
+    const mouseClickOnHoverDevice = window.matchMedia('(hover: hover)').matches && e.detail !== 0;
+    if (mouseClickOnHoverDevice) return;
+    setYarnMenuOpen(!yarnMenu.classList.contains('open'));
+});
+
+document.addEventListener('click', (e) => {
+    if (!yarnMenu.contains(e.target)) setYarnMenuOpen(false);
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        setYarnMenuOpen(false);
+        yarnMenuButton.focus();
+    }
+});
+
 // Track language switch clicks (these navigate to the other domain)
 document.querySelectorAll(".flag-link").forEach(link => {
 link.addEventListener("click", function() {

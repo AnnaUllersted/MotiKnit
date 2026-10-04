@@ -1,5 +1,37 @@
 [
   {
+    "slug": "yin-yang",
+    "title": "Yin and yang knitting chart",
+    "title_da": "Yin og yang strikkemønster",
+    "description": "The classic yin and yang symbol in black and white. A striking, high-contrast motif for hats, sweaters and cushion covers.",
+    "description_da": "Det klassiske yin og yang-symbol i sort og hvid. Et markant motiv med høj kontrast til huer, trøjer og pudebetræk.",
+    "category": "Symbols",
+    "stitches": 27,
+    "rows": 36,
+    "height_cm": 15,
+    "gauge_stitches": 18,
+    "gauge_rows": 24,
+    "chart_image": "motifs/yin-yang-chart.png",
+    "photo": null,
+    "published": "2026-10-04"
+  },
+  {
+    "slug": "letter-a",
+    "title": "Letter A knitting chart",
+    "title_da": "Bogstavet A strikkemønster",
+    "description": "A decorative letter A with a looping flourish. A lovely initial for baby blankets, cushion covers and name hats.",
+    "description_da": "Et dekorativt bogstav A med en elegant sløjfe. Et smukt forbogstav til babytæpper, pudebetræk og navnehuer.",
+    "category": "Letters",
+    "stitches": 34,
+    "rows": 36,
+    "height_cm": 15,
+    "gauge_stitches": 18,
+    "gauge_rows": 24,
+    "chart_image": "motifs/A-chart.png",
+    "photo": null,
+    "published": "2026-10-04"
+  },
+  {
     "slug": "bee",
     "title": "Bee knitting chart",
     "title_da": "Bi strikkemønster",
@@ -11,8 +43,6 @@
     "height_cm": 15,
     "gauge_stitches": 18,
     "gauge_rows": 24,
-    "method": "Knitting in the round",
-    "method_da": "Der strikkes på rundpind",
     "chart_image": "motifs/bee-chart.png",
     "photo": "motifs/bee-knitted.jpg",
     "published": "2026-09-26"
@@ -29,8 +59,6 @@
     "height_cm": 12.5,
     "gauge_stitches": 18,
     "gauge_rows": 24,
-    "method": "Knitting in the round",
-    "method_da": "Der strikkes på rundpind",
     "chart_image": "motifs/lemon-chart.png",
     "photo": null,
     "published": "2026-09-25"

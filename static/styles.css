@@ -49,12 +49,70 @@ h2 {
     margin: 20px;
 }
 
-.header-image {
+.yarn-menu {
     position: absolute;
     right: 10px; /* Placer billedet helt til højre */
+}
+
+.yarn-menu-button,
+.yarn-menu-button:hover {
+    background: none;
+    border: 0;
+    padding: 0;
+    display: block;
+}
+
+.yarn-menu-button:focus-visible {
+    outline: 3px solid #391212;
+    outline-offset: 2px;
+    border-radius: 8px;
+}
+
+.header-image {
+    display: block;
     height: 6rem; /* Match overskriftens højde */
     width: auto; /* Bevar proportioner */
     padding: 20px;
+}
+
+.yarn-menu-list {
+    display: none;
+    position: absolute;
+    top: 85%;
+    right: 20px;
+    min-width: 220px;
+    list-style: none;
+    background-color: #FAF5EB;
+    border: 1px solid #BDC9E5;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    padding: 6px 0;
+    z-index: 150;
+}
+
+.yarn-menu.open .yarn-menu-list {
+    display: block;
+}
+
+@media (hover: hover) {
+    .yarn-menu:hover .yarn-menu-list {
+        display: block;
+    }
+}
+
+.yarn-menu-list a {
+    display: block;
+    padding: 12px 18px;
+    font-size: 1.1rem;
+    color: #391212;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.yarn-menu-list a:hover,
+.yarn-menu-list a:focus-visible {
+    background-color: #BDC9E5;
+    outline: none;
 }
 
 /* Form and Input Styles */
@@ -436,9 +494,11 @@ button:hover {
         margin-bottom: 1px;
     }
 
-    .header-image {
-        position: absolute;
+    .yarn-menu {
         right: -33px; /* Placer billedet helt til højre */
+    }
+
+    .header-image {
         height: 7rem; /* Match overskriftens højde */
         width: auto; /* Bevar proportioner */
         margin-bottom: 8px;
@@ -484,8 +544,6 @@ button:hover {
     }
     
     .header-image {
-        position: absolute;
-        right: -33px; /* Placer billedet helt til højre */
         height: 5rem; /* Match overskriftens højde */
         width: auto; /* Bevar proportioner */
         margin-bottom: 8px;

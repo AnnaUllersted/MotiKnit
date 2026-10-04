@@ -41,7 +41,14 @@
     </div>
     <div class="header-container">
         <h1 class="title">MotiKnit</h1>
-        <img src="/static/Yarn.jpg" alt="Logo" class="header-image">
+        <div class="yarn-menu" id="yarnMenu">
+            <button type="button" class="yarn-menu-button" id="yarnMenuButton" aria-haspopup="true" aria-expanded="false" aria-controls="yarnMenuList" aria-label="Menu">
+                <img src="/static/Yarn.jpg" alt="" class="header-image">
+            </button>
+            <ul class="yarn-menu-list" id="yarnMenuList">
+                <li><a href="/motifs" data-translate="menuMotifs">Gratis strikkemotiver</a></li>
+            </ul>
+        </div>
     </div>
     <div class="language-switcher">
         <a href="http://www.motiknit.dk" class="flag-link">
