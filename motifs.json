@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "bee",
+    "title": "Bee knitting chart",
+    "title_da": "Bi strikkemønster",
+    "description": "A bold bee motif for colourwork. Works well on hats, mittens and cushion covers.",
+    "description_da": "Et markant bi-motiv til farvestrikning. Fungerer godt på huer, vanter og pudebetræk.",
+    "category": "Animals",
+    "stitches": 35,
+    "rows": 36,
+    "height_cm": 15,
+    "gauge_stitches": 18,
+    "gauge_rows": 24,
+    "method": "Knitting in the round",
+    "method_da": "Der strikkes på rundpind",
+    "chart_image": "motifs/bee-chart.png",
+    "photo": "motifs/bee-knitted.jpg",
+    "published": "2026-09-26"
+  },
+  {
+    "slug": "lemon",
+    "title": "Lemon knitting chart",
+    "title_da": "Citron strikkemønster",
+    "description": "A simple lemon outline motif. Easy to knit and a good first colourwork project.",
+    "description_da": "Et simpelt citron-omrids motiv. Nemt at strikke og et godt første farvestrikningsprojekt.",
+    "category": "Food",
+    "stitches": 35,
+    "rows": 30,
+    "height_cm": 12.5,
+    "gauge_stitches": 18,
+    "gauge_rows": 24,
+    "method": "Knitting in the round",
+    "method_da": "Der strikkes på rundpind",
+    "chart_image": "motifs/lemon-chart.png",
+    "photo": null,
+    "published": "2026-09-25"
+  }
+]

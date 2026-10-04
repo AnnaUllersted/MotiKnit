@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ motif.title }} {{ t.title_suffix }}</title>
+  <meta name="description" content="{{ motif.description }}">
+  <link rel="canonical" href="{{ page_url }}">
+
+  <!-- Open Graph: used by Pinterest (rich pins), Facebook and others -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MotiKnit">
+  <meta property="og:title" content="{{ motif.title }}">
+  <meta property="og:description" content="{{ motif.description }}">
+  <meta property="og:url" content="{{ page_url }}">
+  <meta property="og:image" content="{{ image_url }}">
+
+  <!-- Google Consent Mode: deny non-essential tracking until the user accepts the cookie banner -->
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
+      'analytics_storage': 'denied'
+  });
+  </script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BPPSM0XE3R"></script>
+  <script>
+  gtag('js', new Date());
+  gtag('config', 'G-BPPSM0XE3R');
+  </script>
+  <!-- Pinterest Tag is only loaded after consent is granted, see cookie-consent.js -->
+
+  <!-- Swap this block for your existing stylesheet if you prefer -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --cream: #F8F4EC; --panel: #BDC6E1; --ink: #3A1414; --button: #5C2121; }
+    body { margin: 0; background: var(--cream); color: var(--ink); font-family: "Quicksand", sans-serif; }
+    main { max-width: 720px; margin: 0 auto; padding: 24px 16px 48px; }
+    a { color: var(--button); }
+    h1 { font-family: Georgia, serif; font-size: 2rem; margin: 16px 0 8px; }
+    .panel { background: var(--panel); border-radius: 16px; padding: 20px; margin: 20px 0; }
+    .chart { width: 100%; height: auto; background: #fff; border-radius: 8px; }
+    .facts { margin: 0; line-height: 1.7; }
+    .button { display: inline-block; background: var(--button); color: #fff; padding: 14px 24px;
+              border-radius: 8px; text-decoration: none; }
+    .button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+    .cookie-banner { position: fixed; left: 0; bottom: 0; width: 100%; z-index: 200;
+        background: var(--ink); color: var(--cream); padding: 16px 20px; display: flex;
+        flex-wrap: wrap; align-items: center; justify-content: center; gap: 20px;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2); }
+    .cookie-banner p { margin: 0; max-width: 600px; font-size: 1rem; text-align: center; }
+    .cookie-buttons { display: flex; gap: 10px; flex-shrink: 0; }
+    .cookie-buttons button { padding: 10px 24px; font-size: 1rem; font-family: "Quicksand", sans-serif;
+        border-radius: 5px; border: none; cursor: pointer; background: var(--cream); color: var(--ink); }
+    .cookie-decline { background: transparent; color: var(--cream); border: 1px solid var(--cream); }
+  </style>
+</head>
+<body>
+  <div id="cookieConsent" class="cookie-banner" style="display: none;">
+    <p>{{ t.cookie_message }}</p>
+    <div class="cookie-buttons">
+      <button id="cookieAccept" type="button">{{ t.cookie_accept }}</button>
+      <button id="cookieDecline" type="button" class="cookie-decline">{{ t.cookie_decline }}</button>
+    </div>
+  </div>
+  <main>
+    <a href="{{ url_for('motif_pages.motif_index') }}">{{ t.all_motifs }}</a>
+
+    <h1>{{ motif.title }}</h1>
+    <p>{{ motif.description }}</p>
+
+    <img class="chart" src="{{ url_for('static', filename=motif.chart_image) }}"
+         alt="{{ motif.chart_alt }}">
+
+    <div class="panel">
+      <p class="facts">
+        {{ motif.size_line }}<br>
+        {{ motif.gauge_line }}<br>
+        {{ motif.method_line }}
+      </p>
+    </div>
+
+    {% if motif.photo %}
+    <img class="chart" src="{{ url_for('static', filename=motif.photo) }}"
+         alt="{{ motif.photo_alt }}">
+    {% endif %}
+
+    <!-- Optional later: materials box with affiliate links (label it "reklame") -->
+
+    <div class="panel">
+      <p>{{ t.need_different }}</p>
+      <a class="button" href="/">{{ t.open_generator }}</a>
+    </div>
+  </main>
+  <script src="{{ url_for('static', filename='js/cookie-consent.js') }}"></script>
+</body>
+</html>
