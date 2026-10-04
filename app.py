@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify, make_response, Blueprint
+from flask import Flask, request, render_template, jsonify, make_response, Blueprint, url_for
 import os
 import base64
 from pdf_generator import create_pattern_pdf
@@ -9,7 +9,7 @@ from pattern_visualizer import KnittingPatternVisualizer
 import sys
 from dotenv import load_dotenv
 from translator import translate
-from motif_pages import motif_pages
+from motif_pages import motif_pages, get_motif
 
 load_dotenv()
 ENVIRONMENT = os.environ.get('FLASK_ENV', 'production')
@@ -31,7 +31,19 @@ def get_language_from_domain():
 @app.route('/')
 def home():
     language = get_language_from_domain()
-    return render_template('index.html', lang=language)
+    # /?motif=<slug> opens the generator with that motif's image and settings filled in
+    motif = get_motif(request.args.get('motif', ''))
+    start_motif = None
+    if motif:
+        start_motif = {
+            'slug': motif['slug'],
+            'image': url_for('static', filename=motif['source_image']),
+            'intensity': motif['intensity'],
+            'height_cm': motif['height_cm'],
+            'gauge_stitches': motif['gauge_stitches'],
+            'gauge_rows': motif['gauge_rows'],
+        }
+    return render_template('index.html', lang=language, start_motif=start_motif)
 
 @app.route('/process', methods=['POST'])
 def process():

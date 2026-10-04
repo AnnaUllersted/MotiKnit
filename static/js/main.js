@@ -48,36 +48,57 @@ const presetSettings = {
     'preset6.jpg': 85
 };
 
-        // Modified selectPresetImage function
+// Put an image from our own server into the file input, as if the visitor had uploaded it
+async function loadImageIntoForm(src, intensity) {
+    const response = await fetch(src);
+    const blob = await response.blob();
+    const file = new File([blob], 'preset.jpg', { type: 'image/jpeg' });
+
+    // Create a new FileList-like object
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+
+    // Update the file input
+    fileInput.files = dataTransfer.files;
+
+    // Show the selected image in the preview
+    originalImage.src = src;
+    originalImage.style.display = 'block';
+    imageGrid.style.display = 'flex';
+
+    if (intensity) {
+        slider.value = intensity;
+        output.innerHTML = slider.value;
+    }
+}
+
 async function selectPresetImage(imgElement) {
     try {
-        const response = await fetch(imgElement.src);
-        const blob = await response.blob();
-        const file = new File([blob], 'preset.jpg', { type: 'image/jpeg' });
-        
-        // Create a new FileList-like object
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(file);
-        
-        // Update the file input
-        fileInput.files = dataTransfer.files;
-        
-        // Show the selected image in the preview
-        originalImage.src = imgElement.src;
-        originalImage.style.display = 'block';
-        imageGrid.style.display = 'flex';
-
-        // Set slider value based on preset image
         const imageName = imgElement.src.split('/').pop();
-        if (presetSettings[imageName]) {
-            slider.value = presetSettings[imageName];
-            output.innerHTML = slider.value;
-        }
-
+        await loadImageIntoForm(imgElement.src, presetSettings[imageName]);
         trackEvent('select_preset_image', { preset_name: imageName });
     } catch (error) {
         errorElement.textContent = 'Error loading preset image';
     }
+}
+
+// Coming from a free motif page (/?motif=<slug>): start from that motif and its settings,
+// so the visitor only has to change the size or gauge
+async function loadStartMotif(motif) {
+    try {
+        document.getElementById('size').value = motif.height_cm;
+        document.getElementById('masker').value = motif.gauge_stitches;
+        document.getElementById('pinde').value = motif.gauge_rows;
+        await loadImageIntoForm(motif.image, motif.intensity);
+        uploadForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        trackEvent('open_motif_in_generator', { motif: motif.slug });
+    } catch (error) {
+        errorElement.textContent = 'Error loading motif image';
+    }
+}
+
+if (window.startMotif) {
+    loadStartMotif(window.startMotif);
 }
 
 // Show the original image after it's uploaded

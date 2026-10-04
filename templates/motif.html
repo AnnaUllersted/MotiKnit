@@ -99,7 +99,7 @@
 
     <div class="panel">
       <p>{{ t.need_different }}</p>
-      <a class="button" href="/">{{ t.open_generator }}</a>
+      <a class="button" href="{{ url_for('home', motif=motif.slug) }}">{{ t.open_generator }}</a>
     </div>
   </main>
   <script src="{{ url_for('static', filename='js/cookie-consent.js') }}"></script>

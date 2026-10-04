@@ -12,6 +12,8 @@
     "gauge_stitches": 18,
     "gauge_rows": 24,
     "chart_image": "motifs/snowflake-chart.png",
+    "source_image": "motifs/snowflake-source.jpg",
+    "intensity": 50,
     "photo": null,
     "published": "2026-10-04"
   },
@@ -28,6 +30,8 @@
     "gauge_stitches": 18,
     "gauge_rows": 24,
     "chart_image": "motifs/santa-claus-chart.png",
+    "source_image": "motifs/santa-claus-source.jpg",
+    "intensity": 50,
     "photo": null,
     "published": "2026-10-04"
   },
@@ -44,6 +48,8 @@
     "gauge_stitches": 18,
     "gauge_rows": 24,
     "chart_image": "motifs/reindeer-chart.png",
+    "source_image": "motifs/reindeer-source.jpg",
+    "intensity": 65,
     "photo": null,
     "published": "2026-10-04"
   },
@@ -60,6 +66,8 @@
     "gauge_stitches": 18,
     "gauge_rows": 24,
     "chart_image": "motifs/gingerbread-man-chart.png",
+    "source_image": "motifs/gingerbread-man-source.jpg",
+    "intensity": 50,
     "photo": null,
     "published": "2026-10-04"
   },
@@ -76,6 +84,8 @@
     "gauge_stitches": 18,
     "gauge_rows": 24,
     "chart_image": "motifs/christmas-tree-chart.png",
+    "source_image": "motifs/christmas-tree-source.jpg",
+    "intensity": 50,
     "photo": null,
     "published": "2026-10-04"
   },
@@ -92,6 +102,8 @@
     "gauge_stitches": 18,
     "gauge_rows": 24,
     "chart_image": "motifs/christmas-bell-chart.png",
+    "source_image": "motifs/christmas-bell-source.jpg",
+    "intensity": 50,
     "photo": null,
     "published": "2026-10-04"
   },
@@ -108,6 +120,8 @@
     "gauge_stitches": 18,
     "gauge_rows": 24,
     "chart_image": "motifs/candy-cane-chart.png",
+    "source_image": "motifs/candy-cane-source.jpg",
+    "intensity": 65,
     "photo": null,
     "published": "2026-10-04"
   },
@@ -124,6 +138,8 @@
     "gauge_stitches": 18,
     "gauge_rows": 24,
     "chart_image": "motifs/yin-yang-chart.png",
+    "source_image": "preset2.jpg",
+    "intensity": 80,
     "photo": null,
     "published": "2026-10-04"
   },
@@ -140,6 +156,8 @@
     "gauge_stitches": 18,
     "gauge_rows": 24,
     "chart_image": "motifs/A-chart.png",
+    "source_image": "preset3.jpg",
+    "intensity": 90,
     "photo": null,
     "published": "2026-10-04"
   },
@@ -150,12 +168,14 @@
     "description": "A bold bee motif for colourwork. Works well on hats, mittens and cushion covers.",
     "description_da": "Et markant bi-motiv til farvestrikning. Fungerer godt på huer, vanter og pudebetræk.",
     "category": "Animals",
-    "stitches": 35,
+    "stitches": 28,
     "rows": 36,
     "height_cm": 15,
     "gauge_stitches": 18,
     "gauge_rows": 24,
     "chart_image": "motifs/bee-chart.png",
+    "source_image": "preset1.jpg",
+    "intensity": 50,
     "photo": "motifs/bee-knitted.jpg",
     "published": "2026-09-26"
   },
@@ -166,12 +186,14 @@
     "description": "A simple lemon outline motif. Easy to knit and a good first colourwork project.",
     "description_da": "Et simpelt citron-omrids motiv. Nemt at strikke og et godt første farvestrikningsprojekt.",
     "category": "Food",
-    "stitches": 35,
-    "rows": 30,
-    "height_cm": 12.5,
+    "stitches": 31,
+    "rows": 36,
+    "height_cm": 15,
     "gauge_stitches": 18,
     "gauge_rows": 24,
     "chart_image": "motifs/lemon-chart.png",
+    "source_image": "preset6.jpg",
+    "intensity": 85,
     "photo": null,
     "published": "2026-09-25"
   }
