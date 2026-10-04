@@ -1,17 +1,17 @@
 [
   {
-    "slug": "jin-jan",
-    "title": "Yin yang knitting chart",
-    "title_da": "Jin og jan strikkemønster",
-    "description": "A classic yin yang symbol in black and white. A striking, high-contrast motif for hats, sweaters and cushion covers.",
-    "description_da": "Det klassiske jin og jan-symbol i sort og hvid. Et markant motiv med høj kontrast til huer, trøjer og pudebetræk.",
+    "slug": "yin-yang",
+    "title": "Yin and yang knitting chart",
+    "title_da": "Yin og yang strikkemønster",
+    "description": "The classic yin and yang symbol in black and white. A striking, high-contrast motif for hats, sweaters and cushion covers.",
+    "description_da": "Det klassiske yin og yang-symbol i sort og hvid. Et markant motiv med høj kontrast til huer, trøjer og pudebetræk.",
     "category": "Symbols",
     "stitches": 27,
     "rows": 36,
     "height_cm": 15,
     "gauge_stitches": 18,
     "gauge_rows": 24,
-    "chart_image": "motifs/jin-jan-chart.png",
+    "chart_image": "motifs/yin-yang-chart.png",
     "photo": null,
     "published": "2026-10-04"
   },
