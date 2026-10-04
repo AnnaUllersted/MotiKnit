@@ -9,11 +9,13 @@ from pattern_visualizer import KnittingPatternVisualizer
 import sys
 from dotenv import load_dotenv
 from translator import translate
+from motif_pages import motif_pages
 
 load_dotenv()
 ENVIRONMENT = os.environ.get('FLASK_ENV', 'production')
 print(ENVIRONMENT)
 app = Flask(__name__)
+app.register_blueprint(motif_pages)
 logger = logging.getLogger(__name__)
 
 # Configuration
