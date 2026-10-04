@@ -202,6 +202,7 @@
 
     <p id="error" class="error"></p>
 
+    <script>window.startMotif = {{ start_motif | tojson }};</script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="{{ url_for('static', filename='js/cookie-consent.js') }}"></script>
 </body>
