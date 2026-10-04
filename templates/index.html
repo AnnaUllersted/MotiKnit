@@ -4,35 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!--------------- copy directly from google analytics and pinterest ----------------------------->
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BPPSM0XE3R"></script>
+    <!-- Google Consent Mode: deny non-essential tracking until the user accepts the cookie banner -->
     <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+    gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'analytics_storage': 'denied'
+    });
+    </script>
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BPPSM0XE3R"></script>
+    <script>
+    gtag('js', new Date());
     gtag('config', 'G-BPPSM0XE3R');
     </script>
-
-    <!-- Pinterest Tag -->
-    <script>
-    !function(e){if(!window.pintrk){window.pintrk = function () {
-    window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var
-      n=window.pintrk;n.queue=[],n.version="3.0";var
-      t=document.createElement("script");t.async=!0,t.src=e;var
-      r=document.getElementsByTagName("script")[0];
-      r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js");
-    pintrk('load', '2612789882408', {em: '<user_email_address>'});
-    pintrk('page');
-    </script>
-    <noscript>
-    <img height="1" width="1" style="display:none;" alt=""
-      src="https://ct.pinterest.com/v3/?event=init&tid=2612789882408&pd[em]=<hashed_email_address>&noscript=1" />
-    </noscript>
-    <!-- end Pinterest Tag -->
-    <!--------------- end of copy ---------------------->
-
+    <!-- Pinterest Tag is only loaded after consent is granted, see cookie-consent.js -->
 
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
@@ -42,6 +32,13 @@
     </style>
 </head>
 <body>
+    <div id="cookieConsent" class="cookie-banner" style="display: none;">
+        <p data-translate="cookieMessage">Vi bruger cookies (Google Analytics og Pinterest) til at måle trafik og forbedre siden. Du kan acceptere eller afvise dem.</p>
+        <div class="cookie-buttons">
+            <button id="cookieAccept" type="button" data-translate="cookieAccept">Accepter</button>
+            <button id="cookieDecline" type="button" class="cookie-decline" data-translate="cookieDecline">Afvis</button>
+        </div>
+    </div>
     <div class="header-container">
         <h1 class="title">MotiKnit</h1>
         <img src="/static/Yarn.jpg" alt="Logo" class="header-image">
@@ -199,5 +196,6 @@
     <p id="error" class="error"></p>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cookie-consent.js') }}"></script>
 </body>
 </html>
