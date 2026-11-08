@@ -83,8 +83,17 @@ def get_motif(slug):
     return next((m for m in load_motifs() if m["slug"] == slug), None)
 
 
+def localized_chart(motif, lang):
+    """The chart with row labels in this language (motifs/x-chart-da.png), if there is one."""
+    base, ext = os.path.splitext(motif["chart_image"])
+    candidate = f"{base}-{lang}{ext}"
+    if os.path.exists(os.path.join(current_app.static_folder, candidate)):
+        return candidate
+    return motif["chart_image"]
+
+
 def localize_motif(motif, lang):
-    """Motif dict with language-specific text resolved, falling back to English."""
+    """Motif dict with language-specific text and chart resolved, falling back to English."""
     title = motif.get(f"title_{lang}") or motif["title"]
     description = motif.get(f"description_{lang}") or motif["description"]
 
@@ -107,6 +116,7 @@ def localize_motif(motif, lang):
         "gauge_line": gauge_line,
         "chart_alt": chart_alt,
         "photo_alt": photo_alt,
+        "chart_image": localized_chart(motif, lang),
     }
 
 
@@ -158,15 +168,16 @@ def motif_page(slug):
     if motif is None:
         abort(404)
     lang = get_language()
+    localized = localize_motif(motif, lang)
     return render_template(
         "motif.html",
-        motif=localize_motif(motif, lang),
+        motif=localized,
         lang=lang,
         link_args=link_args(lang),
         t=UI_TEXT[lang],
         page_url=absolute("motif_pages.motif_page", slug=slug),
         alternates=alternate_urls("motif_pages.motif_page", slug=slug),
-        image_url=absolute("static", filename=motif["chart_image"]),
+        image_url=absolute("static", filename=localized["chart_image"]),
     )
 
 
@@ -208,8 +219,8 @@ def feed():
     for m in load_motifs()[:50]:
         localized = localize_motif(m, lang)
         link = absolute("motif_pages.motif_page", slug=m["slug"])
-        image = absolute("static", filename=m["chart_image"])
-        image_path = os.path.join(current_app.static_folder, m["chart_image"])
+        image = absolute("static", filename=localized["chart_image"])
+        image_path = os.path.join(current_app.static_folder, localized["chart_image"])
         size = os.path.getsize(image_path) if os.path.exists(image_path) else 0
         published = datetime.fromisoformat(m["published"]).replace(tzinfo=timezone.utc)
 
