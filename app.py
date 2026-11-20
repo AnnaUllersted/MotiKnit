@@ -9,7 +9,7 @@ from pattern_visualizer import KnittingPatternVisualizer
 import sys
 from dotenv import load_dotenv
 from translator import translate
-from motif_pages import motif_pages, get_motif
+from motif_pages import motif_pages, get_motif, load_motifs, localize_motif
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 load_dotenv()
@@ -46,7 +46,9 @@ def home():
             'gauge_stitches': motif['gauge_stitches'],
             'gauge_rows': motif['gauge_rows'],
         }
-    return render_template('index.html', lang=language, start_motif=start_motif)
+    # The newest free motifs, shown under the upload field (12 on wide screens, 6 on smaller ones)
+    latest_motifs = [localize_motif(m, language) for m in load_motifs()[:12]]
+    return render_template('index.html', lang=language, start_motif=start_motif, latest_motifs=latest_motifs)
 
 @app.route('/process', methods=['POST'])
 def process():

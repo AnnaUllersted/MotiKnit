@@ -70,14 +70,15 @@
             </div>
             
             <div class="preset-images">
-                <label for="Eksempler" data-translate="Examples"></label>
+                <div class="preset-header">
+                    <span class="preset-title" data-translate="menuMotifs">Gratis strikkemotiver</span>
+                    <a href="/motifs" class="see-all-link" data-translate="seeAll">Se alle motiver →</a>
+                </div>
                 <div class="preset-grid">
-                    <img src="/static/preset1.jpg" class="preset-image" alt="Preset 1" onclick="selectPresetImage(this)">
-                    <img src="/static/preset2.jpg" class="preset-image" alt="Preset 2" onclick="selectPresetImage(this)">
-                    <img src="/static/preset3.jpg" class="preset-image" alt="Preset 3" onclick="selectPresetImage(this)">
-                    <img src="/static/preset4.jpg" class="preset-image" alt="Preset 4" onclick="selectPresetImage(this)">
-                    <img src="/static/preset5.jpg" class="preset-image" alt="Preset 5" onclick="selectPresetImage(this)">
-                    <img src="/static/preset6.jpg" class="preset-image" alt="Preset 6" onclick="selectPresetImage(this)">
+                    {% for m in latest_motifs %}
+                    <img src="{{ url_for('static', filename=m.source_image) }}" class="preset-image" alt="{{ m.title }}" title="{{ m.title }}"
+                         data-slug="{{ m.slug }}" data-intensity="{{ m.intensity }}" onclick="selectPresetMotif(this)">
+                    {% endfor %}
                 </div>
                 <div class="help-text"></div>
             </div>
