@@ -190,6 +190,34 @@ button:hover {
     background-color: #641e1e;
 }
 
+.preset-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 16px;
+    max-width: 470px; /* same width as the 6 motifs below (6 × 70px + 5 × 10px) */
+}
+
+.preset-title {
+    font-weight: bold;
+    color: #391212;
+    font-family: 'Quicksand', sans-serif;
+}
+
+.see-all-link {
+    color: #391212;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.9rem;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    white-space: nowrap;
+}
+
+.see-all-link:hover {
+    text-decoration-thickness: 2px;
+}
+
 .preset-grid {
     display: grid;
     grid-template-columns: repeat(6, 70px);
@@ -212,6 +240,25 @@ button:hover {
 
 .preset-image:hover {
     border-color: #391212;
+}
+
+/* Show 6 motifs on tablets and phones, 12 on wide screens */
+.preset-grid > .preset-image:nth-child(n+7) {
+    display: none;
+}
+
+@media (min-width: 1024px) {
+    .preset-grid {
+        grid-template-columns: repeat(12, 70px);
+    }
+
+    .preset-grid > .preset-image:nth-child(n+7) {
+        display: block;
+    }
+
+    .preset-header {
+        max-width: 950px; /* 12 × 70px + 11 × 10px */
+    }
 }
 
 .slider {

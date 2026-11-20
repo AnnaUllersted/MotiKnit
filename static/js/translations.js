@@ -28,9 +28,9 @@ const translations = {
         'instructions': 'Instructions:',
         'downloadPDF': 'Download PDF',
         'generatingPDF': 'Generating PDF...',
-        'Examples': 'Examples',
         'insta-tagline':"Follow us on instagram",
         'menuMotifs': 'Free knitting motifs',
+        'seeAll': 'See all motifs →',
         'cookieMessage': 'We use cookies (Google Analytics and Pinterest) to measure traffic and improve the site. You can accept or decline them.',
         'cookieAccept': 'Accept',
         'cookieDecline': 'Decline'
@@ -64,9 +64,9 @@ const translations = {
         'instructions': 'Instruktioner:',
         'downloadPDF': 'Download PDF',
         'generatingPDF': 'Genererer PDF...',
-        'Examples': 'Eksempler',
         'insta-tagline':'Følg os på instagram',
         'menuMotifs': 'Gratis strikkemotiver',
+        'seeAll': 'Se alle motiver →',
         'cookieMessage': 'Vi bruger cookies (Google Analytics og Pinterest) til at måle trafik og forbedre siden. Du kan acceptere eller afvise dem.',
         'cookieAccept': 'Accepter',
         'cookieDecline': 'Afvis'

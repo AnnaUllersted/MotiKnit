@@ -38,16 +38,6 @@ slider.addEventListener('touchend', function() {
     }
 });
 
-// Preset image settings
-const presetSettings = {
-    'preset1.jpg': 50,  
-    'preset2.jpg': 80,
-    'preset3.jpg': 90,
-    'preset4.jpg': 75,
-    'preset5.jpg': 40,
-    'preset6.jpg': 85
-};
-
 // Put an image from our own server into the file input, as if the visitor had uploaded it
 async function loadImageIntoForm(src, intensity) {
     const response = await fetch(src);
@@ -72,13 +62,13 @@ async function loadImageIntoForm(src, intensity) {
     }
 }
 
-async function selectPresetImage(imgElement) {
+// Clicking one of the newest motifs on the front page puts its picture into the generator
+async function selectPresetMotif(imgElement) {
     try {
-        const imageName = imgElement.src.split('/').pop();
-        await loadImageIntoForm(imgElement.src, presetSettings[imageName]);
-        trackEvent('select_preset_image', { preset_name: imageName });
+        await loadImageIntoForm(imgElement.src, Number(imgElement.dataset.intensity));
+        trackEvent('select_preset_image', { motif: imgElement.dataset.slug });
     } catch (error) {
-        errorElement.textContent = 'Error loading preset image';
+        errorElement.textContent = 'Error loading motif image';
     }
 }
 
