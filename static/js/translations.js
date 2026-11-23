@@ -31,6 +31,7 @@ const translations = {
         'insta-tagline':"Follow us on instagram",
         'menuMotifs': 'Free knitting motifs',
         'seeAll': 'See all motifs →',
+        'tagline': 'Upload a picture and get a finished knitting chart and pattern in your own size – all for free.',
         'cookieMessage': 'We use cookies (Google Analytics and Pinterest) to measure traffic and improve the site. You can accept or decline them.',
         'cookieAccept': 'Accept',
         'cookieDecline': 'Decline'
@@ -67,6 +68,7 @@ const translations = {
         'insta-tagline':'Følg os på instagram',
         'menuMotifs': 'Gratis strikkemotiver',
         'seeAll': 'Se alle motiver →',
+        'tagline': 'Upload et billede, og få et færdigt strikkediagram og en opskrift i din egen størrelse – helt gratis.',
         'cookieMessage': 'Vi bruger cookies (Google Analytics og Pinterest) til at måle trafik og forbedre siden. Du kan acceptere eller afvise dem.',
         'cookieAccept': 'Accepter',
         'cookieDecline': 'Afvis'
