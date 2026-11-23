@@ -31,6 +31,18 @@ const translations = {
         'insta-tagline':"Follow us on instagram",
         'menuMotifs': 'Free knitting motifs',
         'seeAll': 'See all motifs →',
+        'howTitle': 'How it works',
+        'howStep1Title': 'Upload a picture',
+        'howStep1Text': 'Choose a .jpg picture with a clear shape, or use one of the free motifs.',
+        'howStep2Title': 'Choose size and gauge',
+        'howStep2Text': 'Enter how tall the motif should be and how many stitches and rows you knit per 10 cm.',
+        'howStep3Title': 'Get your chart and pattern',
+        'howStep3Text': 'You get a knitting chart and a row-by-row pattern that you can download as a PDF.',
+        'howBefore': 'Before: your picture',
+        'howAfter': 'After: your knitting chart',
+        'howBeforeAlt': 'Picture of Santa Claus with his sack of presents',
+        'howAfterAlt': 'Knitting chart of Santa Claus',
+        'howAfterSrc': '/static/motifs/santa-claus-chart-en.png',
         'tagline': 'Upload a picture and get a finished knitting chart and pattern in your own size – all for free.',
         'cookieMessage': 'We use cookies (Google Analytics and Pinterest) to measure traffic and improve the site. You can accept or decline them.',
         'cookieAccept': 'Accept',
@@ -68,6 +80,18 @@ const translations = {
         'insta-tagline':'Følg os på instagram',
         'menuMotifs': 'Gratis strikkemotiver',
         'seeAll': 'Se alle motiver →',
+        'howTitle': 'Sådan virker det',
+        'howStep1Title': 'Upload et billede',
+        'howStep1Text': 'Vælg et .jpg-billede med en tydelig figur, eller brug et af de gratis motiver.',
+        'howStep2Title': 'Vælg størrelse og strikkefasthed',
+        'howStep2Text': 'Skriv hvor højt motivet skal være, og hvor mange masker og pinde du strikker på 10 cm.',
+        'howStep3Title': 'Få diagram og opskrift',
+        'howStep3Text': 'Du får et strikkediagram og en opskrift pind for pind, som du kan hente som PDF.',
+        'howBefore': 'Før: dit billede',
+        'howAfter': 'Efter: dit strikkediagram',
+        'howBeforeAlt': 'Billede af julemanden med gavesæk',
+        'howAfterAlt': 'Strikkediagram af julemanden',
+        'howAfterSrc': '/static/motifs/santa-claus-chart-da.png',
         'tagline': 'Upload et billede, og få et færdigt strikkediagram og en opskrift i din egen størrelse – helt gratis.',
         'cookieMessage': 'Vi bruger cookies (Google Analytics og Pinterest) til at måle trafik og forbedre siden. Du kan acceptere eller afvise dem.',
         'cookieAccept': 'Accepter',
@@ -91,6 +115,20 @@ function updatePageContent(lang) {
             } else {
                 element.textContent = translations[lang][key];
             }
+        }
+    });
+
+    // Image alt texts and language-specific images
+    document.querySelectorAll('[data-translate-alt]').forEach(element => {
+        const key = element.getAttribute('data-translate-alt');
+        if (translations[lang][key]) {
+            element.alt = translations[lang][key];
+        }
+    });
+    document.querySelectorAll('[data-translate-src]').forEach(element => {
+        const key = element.getAttribute('data-translate-src');
+        if (translations[lang][key]) {
+            element.src = translations[lang][key];
         }
     });
 }

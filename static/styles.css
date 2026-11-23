@@ -159,6 +159,92 @@ select {
     font-family: 'Quicksand', sans-serif;
 }
 
+/* How it works */
+.how-it-works {
+    max-width: 60rem;
+    margin: 80px auto 48px; /* Space below the blue form box */
+    padding: 0 16px;
+}
+
+.how-title {
+    text-align: center;
+    font-family: 'Hatton', sans-serif;
+    font-size: 2rem;
+    margin-bottom: 24px;
+}
+
+.how-steps {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.how-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    font-size: 1.05rem;
+    line-height: 1.4;
+}
+
+.how-step strong {
+    font-size: 1.2rem;
+}
+
+.how-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    background-color: #BDC9E5;
+    font-family: 'Hatton', sans-serif;
+    font-size: 1.3rem;
+}
+
+.how-example {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 16px;
+}
+
+.how-example figure {
+    flex: 0 1 220px;
+    text-align: center;
+}
+
+.how-example img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.how-example figcaption {
+    margin-top: 8px;
+    font-size: 1rem;
+}
+
+.how-arrow {
+    font-size: 2rem;
+    align-self: center;
+}
+
+@media (max-width: 770px) {
+    .how-steps {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
 .tagline {
     text-align: center;
     font-size: 1.2rem;
