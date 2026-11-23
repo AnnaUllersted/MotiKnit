@@ -96,17 +96,19 @@ def localize_motif(motif, lang):
     """Motif dict with language-specific text and chart resolved, falling back to English."""
     title = motif.get(f"title_{lang}") or motif["title"]
     description = motif.get(f"description_{lang}") or motif["description"]
+    # Short motif name for alt texts, e.g. "snemand" or "\"Jingle Bells\"" (phrases keep their own wording)
+    name = motif.get(f"name_{lang}") or motif.get("name") or title
 
     if lang == "da":
         size_line = f"Størrelse: {motif['stitches']} masker × {motif['rows']} pinde (ca. {motif['height_cm']} cm høj)"
         gauge_line = f"Strikkefasthed: {motif['gauge_stitches']} masker × {motif['gauge_rows']} pinde per 10 cm"
-        chart_alt = f"Strikkediagram af et {title.lower()}, {motif['stitches']} masker x {motif['rows']} pinde"
-        photo_alt = f"Strikket eksempel af {title.lower()}"
+        chart_alt = f"Strikkediagram: {name}, {motif['stitches']} masker × {motif['rows']} pinde"
+        photo_alt = f"Strikket prøve: {name}"
     else:
         size_line = f"Size: {motif['stitches']} stitches × {motif['rows']} rows (about {motif['height_cm']} cm tall)"
         gauge_line = f"Gauge: {motif['gauge_stitches']} stitches × {motif['gauge_rows']} rows per 10 cm"
-        chart_alt = f"Knitting chart of a {title.lower()}, {motif['stitches']} stitches by {motif['rows']} rows"
-        photo_alt = f"Knitted sample of the {title.lower()}"
+        chart_alt = f"Knitting chart: {name}, {motif['stitches']} stitches × {motif['rows']} rows"
+        photo_alt = f"Knitted sample: {name}"
 
     return {
         **motif,
