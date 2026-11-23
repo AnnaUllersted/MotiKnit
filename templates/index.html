@@ -132,7 +132,21 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="intensity" data-translate="intensityLabel">Intensitet af motivets farve:</label>
+                    <label for="myRange" class="tooltip-container" data-translate="intensityLabel">Intensitet af motivets farve:
+                        <span class="tooltip-text tooltip-text-wide">
+                            <span class="tooltip-compare">
+                                <span class="tooltip-compare-item">
+                                    <img src="/static/tooltip-intensity-low.png" alt="Strikkediagram af en bi med 20 % intensitet" data-translate-alt="intensityLowAlt" class="tooltip-image">
+                                    20 %
+                                </span>
+                                <span class="tooltip-compare-item">
+                                    <img src="/static/tooltip-intensity-high.png" alt="Strikkediagram af en bi med 80 % intensitet" data-translate-alt="intensityHighAlt" class="tooltip-image">
+                                    80 %
+                                </span>
+                            </span>
+                            <span class="tooltip-description-intensityLabel"></span>
+                        </span>
+                    </label>
                     <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
                     <p><span data-translate="intensity">Intensitet</span>: <span id="demo"></span> %</p>
                 </div>

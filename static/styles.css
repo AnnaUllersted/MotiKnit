@@ -558,6 +558,32 @@ button:hover {
     margin-bottom: 5px;
 }
 
+/* Wider tooltip with two charts side by side (intensity) */
+.tooltip-text-wide {
+    width: 260px;
+    font-size: 1.2rem;
+    line-height: 1.3;
+}
+
+.tooltip-compare {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.tooltip-compare-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.tooltip-compare-item .tooltip-image {
+    background-color: #ffffff;
+    border-radius: 3px;
+}
+
 
 
 /* Mobile Responsive Design */
